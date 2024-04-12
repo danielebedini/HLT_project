@@ -9,11 +9,7 @@ data_balanced = pd.read_csv('new_balanced_data.csv')
 print(data_balanced.head())
 
 # apply preprocessing to the column named 'reviewText'
-data_balanced['CleanedText'] = data_balanced['reviewText'].apply(preprocess_text)
-#data['CleanedText'] = data['reviewText'].apply(preprocess_text_porter_stemmer)
-#data['CleanedText'] = data['reviewText'].apply(preprocess_text_v2)
-#data['CleanedText'] = data['reviewText'].apply(preprocess_text_contractions)
-
+data_balanced['CleanedText'] = data_balanced['reviewText'].apply(preprocess_text_contractions)
 
 # remove rows with missing values in the 'CleanedText' column
 data_balanced = data_balanced.dropna(subset=['CleanedText'])
