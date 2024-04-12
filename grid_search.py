@@ -1,6 +1,6 @@
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score, classification_report
-from data import X_train, X_test, y_train, y_test
+from data import X_train_balanced, X_test_balanced, y_train_balanced, y_test_balanced
 from model_lsvc import model_lsvc
 from model_rfc import model_rfc
 
@@ -20,7 +20,7 @@ rfc_param_grid = {
 
 # for linear SVC
 grid_search = GridSearchCV(model_lsvc, lsvc_param_grid, cv=5, scoring='accuracy')
-grid_search.fit(X_train, y_train)
+grid_search.fit(X_train_balanced, y_train_balanced)
 
 # For random forest
 #grid_search = GridSearchCV(model_rfc, rfc_param_grid, cv=5, scoring='accuracy')
@@ -30,12 +30,12 @@ grid_search.fit(X_train, y_train)
 print("Best Parameters:", grid_search.best_params_)
 
 # evaluate the model on the test set
-y_pred = grid_search.predict(X_test)
-accuracy = accuracy_score(y_test, y_pred)
+y_pred = grid_search.predict(X_test_balanced)
+accuracy = accuracy_score(y_test_balanced, y_pred)
 print(f'Accuracy after Grid Search: {accuracy}')
 
 # Results:
-class_report = classification_report(y_test, y_pred)
+class_report = classification_report(y_test_balanced, y_pred)
 print(f'Classification Report:\n{class_report}')
 
 # for linear SVC
