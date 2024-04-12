@@ -3,6 +3,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 import string
+import json
 
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -132,3 +133,33 @@ def preprocess_text_contractions(text):
         return preprocessed_text
     else:
         return ''
+
+
+# save the results to a json file
+def save_results_json(model, accuracy, class_report, filename):
+    """
+    Save results to a JSON file.
+
+    Args:
+        model: The trained model or its configuration.
+        accuracy (float): The accuracy score.
+        class_report (str): The classification report.
+        filename (str): Name of the JSON file to save.
+
+    Returns:
+        None
+    """
+
+    # Serialize model if it's not a string
+    model_info = str(model) if not isinstance(model, str) else model
+    
+    # Prepare data for JSON serialization
+    results = {
+        'model': model_info,
+        'accuracy': accuracy,
+        'classification_report': class_report
+    }
+    
+    # Save results to JSON file
+    with open(filename, 'w') as f:
+        json.dump(results, f, indent=4)
