@@ -9,7 +9,7 @@ data_balanced = pd.read_csv('new_balanced_data.csv')
 print(data_balanced.head())
 
 # apply preprocessing to the column named 'reviewText'
-data_balanced['CleanedText'] = data_balanced['reviewText'].apply(preprocess_text_contractions)
+data_balanced['CleanedText'] = data_balanced['reviewText'].apply(preprocess_text_v2)
 
 # remove rows with missing values in the 'CleanedText' column
 data_balanced = data_balanced.dropna(subset=['CleanedText'])
@@ -29,6 +29,4 @@ y = data_balanced['overall']
 
 # divide the balanced dataset into training and test sets
 
-X_train_balanced, X_test_balanced, y_train_balanced, y_test_balanced = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# print the shape of the training and test sets
+X_train_balanced, X_test_balanced, y_train_balanced, y_test_balanced = train_test_split(X, y, test_size=0.1, random_state=42,stratify=y)

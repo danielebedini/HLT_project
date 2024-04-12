@@ -5,6 +5,8 @@ from model_lsvc import model_lsvc
 from model_rfc import model_rfc
 from utils import save_results_json
 
+K_FOLD = 5
+
 # define the range of hyperparameters to test
 lsvc_param_grid = {
     'clf__C': [0.1, 1.0, 10.0, 100.0],  # different values for C
@@ -19,7 +21,7 @@ rfc_param_grid = {
 }
 
 # for linear SVC
-grid_search = GridSearchCV(model_lsvc, lsvc_param_grid, cv=10, scoring='accuracy')
+grid_search = GridSearchCV(model_lsvc, lsvc_param_grid, cv=K_FOLD, scoring='accuracy')
 grid_search.fit(X_train_balanced, y_train_balanced)
 
 # For random forest
