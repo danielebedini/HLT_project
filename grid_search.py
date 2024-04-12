@@ -3,7 +3,7 @@ from sklearn.metrics import accuracy_score, classification_report
 from data import X_train_balanced, X_test_balanced, y_train_balanced, y_test_balanced
 from model_lsvc import model_lsvc
 from model_rfc import model_rfc
-
+from utils import save_results_json
 
 # define the range of hyperparameters to test
 lsvc_param_grid = {
@@ -19,7 +19,7 @@ rfc_param_grid = {
 }
 
 # for linear SVC
-grid_search = GridSearchCV(model_lsvc, lsvc_param_grid, cv=5, scoring='accuracy')
+grid_search = GridSearchCV(model_lsvc, lsvc_param_grid, cv=10, scoring='accuracy')
 grid_search.fit(X_train_balanced, y_train_balanced)
 
 # For random forest
@@ -45,3 +45,4 @@ print(f'Classification Report:\n{class_report}')
 # For random forest
 # results: Best Parameters: {'tfidf__max_df': 0.7, 'tfidf__max_features': 10000, 'tfidf__min_df': 5, 'tfidf__ngram_range': (1, 1)}
 # Accuracy after Grid Search: 0.7985757884028484
+save_results_json(grid_search, accuracy, class_report, 'grid_search_results.json')
