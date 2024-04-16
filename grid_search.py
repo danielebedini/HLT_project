@@ -3,6 +3,7 @@ from sklearn.metrics import accuracy_score, classification_report
 from data import X_train_balanced, X_test_balanced, y_train_balanced, y_test_balanced
 from model_lsvc import model_lsvc
 from model_rfc import model_rfc
+from model_LLM import model_llm
 from utils import save_results_json
 
 K_FOLD = 5
