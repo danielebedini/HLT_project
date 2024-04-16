@@ -1,20 +1,23 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, classification_report
 
-from data import X_train_balanced, X_test_balanced, y_train_balanced, y_test_balanced
+class RandomForestModelBuilder:
+    def __init__(self):
+        self.model = Pipeline([
+            ('tfidf', TfidfVectorizer()),
+            ('clf', RandomForestClassifier())
+        ])
 
-# create the pipeline for the RandomForestClassifier
-model_rfc = Pipeline([
-    ('tfidf', TfidfVectorizer()),
-    ('clf', RandomForestClassifier())
-])
+    def train(self, X_train, y_train):
+        self.model.fit(X_train, y_train)
 
-# training the model on the training set
-model_rfc.fit(X_train_balanced, y_train_balanced)
+    def evaluate(self, X_test, y_test):
+        y_pred = self.model.predict(X_test)
+        accuracy = accuracy_score(y_test, y_pred)
+        print(f'Accuracy with RandomForestClassifier: {accuracy}')
+        print(classification_report(y_test, y_pred,zero_division=0))
 
-# evaluation of the model on the test set
-y_pred_rf = model_rfc.predict(X_test_balanced)
-accuracy_rf = accuracy_score(y_test_balanced, y_pred_rf)
-print(f'Accuracy with RandomForestClassifier: {accuracy_rf}')
+    def get_model(self):
+        return self.model

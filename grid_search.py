@@ -1,64 +1,91 @@
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score, classification_report
-from data import X_train_balanced, X_test_balanced, y_train_balanced, y_test_balanced
-from model_lsvc import model_lsvc
-from model_rfc import model_rfc
-from model_LLM import model_llm
+from data import DataPreprocessor
+from model_lsvc import TextModelBuilder
+from model_rfc import RandomForestModelBuilder
+from model_LLM import LogisticRegressionModelBuilder
 from utils import save_results_json
 
-K_FOLD = 5
+class ModelOptimizer:
+    def __init__(self, model, param_grid):
+        self.grid_search = GridSearchCV(model, param_grid, cv=5, scoring='accuracy')
+        self.best_params = None
+        self.classification_report = None
+        self.accuracy = None
 
-# define the range of hyperparameters to test
-lsvc_param_grid = {
-    'clf__C': [0.1, 1.0, 10.0, 100.0],  # different values for C
-    'clf__loss': ['hinge', 'squared_hinge']  # loss functions
+    def fit(self, X_train, y_train):
+        self.grid_search.fit(X_train, y_train)
+        self.best_params = self.grid_search.best_params_
+        print("Best Parameters:", self.best_params)
+
+    def evaluate(self, X_test, y_test):
+        y_pred = self.grid_search.predict(X_test)
+        self.accuracy = accuracy_score(y_test, y_pred)
+        print(f'Accuracy after Grid Search: {self.accuracy}')
+        self.classification_report = classification_report(y_test, y_pred,zero_division=0)
+        print(f'Classification Report:\n{self.classification_report}')
+
+    def save_results(self, filename):
+        save_results_json(self.grid_search, self.accuracy, self.classification_report, filename)
+
+
+preprocessor = DataPreprocessor('new_balanced_data.csv')
+# Carica e preprocessa i dati
+preprocessor.load_and_preprocess()
+# Divide i dati
+preprocessor.split_data()
+# Ottieni i dati di training e test
+X_train_balanced, X_test_balanced, y_train_balanced, y_test_balanced = preprocessor.get_train_test_data()
+
+# Creazione e allenamento del modello
+model_builder = TextModelBuilder()
+model_builder.train(X_train_balanced, y_train_balanced)
+model_builder.evaluate(X_test_balanced, y_test_balanced)
+
+# Ottimizzazione del modello
+model = model_builder.get_model()
+param_grid = {'clf__C': [0.1, 1.0, 10.0, 100.0], 'clf__loss': ['hinge', 'squared_hinge']}
+optimizer = ModelOptimizer(model, param_grid)
+optimizer.fit(X_train_balanced, y_train_balanced)
+optimizer.evaluate(X_test_balanced, y_test_balanced)
+
+
+lr_model_builder = LogisticRegressionModelBuilder(max_iter=5000, solver='liblinear')  
+lr_model_builder.train(X_train_balanced, y_train_balanced)
+lr_model_builder.evaluate(X_test_balanced, y_test_balanced)
+
+# Further optimization
+model = lr_model_builder.get_model()
+param_grid = {
+    'classifier__C': [0.1, 1.0],
+    'vectorizer__max_features': [None, 5000, 10000],
+    'vectorizer__ngram_range': [(1, 1), (1, 2)],
+    'vectorizer__min_df': [5, 10],
+    'vectorizer__max_df': [0.5,  1.0],
+    'classifier__solver': ['liblinear']  
 }
+optimizer = ModelOptimizer(model, param_grid)
+optimizer.fit(X_train_balanced, y_train_balanced)
+optimizer.evaluate(X_test_balanced, y_test_balanced)
 
-rfc_param_grid = {
-    'tfidf__max_features': [10000, 20000, 30000],  # different values for max_features
-    'tfidf__ngram_range': [(1, 1), (1, 2)],  # different values for ngram_range
-    'tfidf__min_df': [5, 10],  # different values for min_df
-    'tfidf__max_df': [0.7, 0.8, 0.9]  # different values for max_df
+
+rf_model_builder = RandomForestModelBuilder()
+rf_model_builder.train(X_train_balanced, y_train_balanced)
+rf_model_builder.evaluate(X_test_balanced, y_test_balanced)
+
+# Ottimizzazione del modello
+model = rf_model_builder.get_model()
+param_grid = {
+    'clf__n_estimators': [100],
+    'clf__max_depth': [None, 10],
+    'clf__min_samples_split': [2],
+    'clf__min_samples_leaf': [1, 2, 4],
+    'tfidf__max_features': [None, 5000],
+    'tfidf__ngram_range': [(1, 1)],
+    'tfidf__min_df': [1, 5],
+    'tfidf__max_df': [0.50]
 }
+optimizer = ModelOptimizer(model, param_grid)
+optimizer.fit(X_train_balanced, y_train_balanced)
+optimizer.evaluate(X_test_balanced, y_test_balanced)
 
-llm_param_grid = {
-    'vectorizer__max_features': [10000, 20000, 30000],  # different values for max_features
-    'vectorizer__ngram_range': [(1, 1), (1, 2)],  # different values for ngram_range
-    'vectorizer__min_df': [5, 10],  # different values for min_df
-    'vectorizer__max_df': [0.7, 0.8, 0.9],  # different values for max_df
-    'classifier__C': [0.1, 1.0, 10.0, 100.0],  # different values for C
-    'classifier__loss': ['hinge', 'squared_hinge']  # loss functions
-}
-
-# perform the grid search for the llm
-#grid_search = GridSearchCV(model, llm_param_grid, cv=5, scoring='accuracy')
-#grid_search.fit(X_train_balanced, y_train_balanced)
-
-# for linear SVC
-grid_search = GridSearchCV(model_lsvc, lsvc_param_grid, cv=K_FOLD, scoring='accuracy')
-grid_search.fit(X_train_balanced, y_train_balanced)
-
-# For random forest
-#grid_search = GridSearchCV(model_rfc, rfc_param_grid, cv=5, scoring='accuracy')
-#grid_search.fit(X_train, y_train)
-
-# best parameters found by GridSearchCV
-print("Best Parameters:", grid_search.best_params_)
-
-# evaluate the model on the test set
-y_pred = grid_search.predict(X_test_balanced)
-accuracy = accuracy_score(y_test_balanced, y_pred)
-print(f'Accuracy after Grid Search: {accuracy}')
-
-# Results:
-class_report = classification_report(y_test_balanced, y_pred)
-print(f'Classification Report:\n{class_report}')
-
-# for linear SVC
-# Best Parameters: {'clf__C': 1.0, 'clf__loss': 'hinge'}
-# Accuracy after Grid Search: 0.8189216683621566
-
-# For random forest
-# results: Best Parameters: {'tfidf__max_df': 0.7, 'tfidf__max_features': 10000, 'tfidf__min_df': 5, 'tfidf__ngram_range': (1, 1)}
-# Accuracy after Grid Search: 0.7985757884028484
-save_results_json(grid_search, accuracy, class_report, 'grid_search_results.json')

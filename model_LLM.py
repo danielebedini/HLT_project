@@ -1,28 +1,35 @@
-# Large language model for sentiment analysis
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, classification_report
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import FunctionTransformer
+from scipy.sparse import issparse
 
-from data import X_train_balanced, X_test_balanced, y_train_balanced, y_test_balanced
+class LogisticRegressionModelBuilder:
+    def __init__(self, max_iter=20000, solver='liblinear'):  # Modificato solver e max_iter
+        self.model = Pipeline([
+            ('vectorizer', CountVectorizer()),
+            # Determina se usare with_mean=False basato sulla sparsità dei dati dopo il vettorizzatore
+            ('scaler', StandardScaler(with_mean=False)),  # Mantenuto basato sulla sparsità
+            ('classifier', LogisticRegression(max_iter=max_iter, solver=solver, verbose=0))  # Aggiunto verbose
+        ])
 
-# create a pipeline
-model_llm = Pipeline([
-    ('vectorizer', CountVectorizer()),
-    ('classifier', LogisticRegression())
-])
+    def train(self, X_train, y_train):
+        # Verifica se i dati sono sparsi e imposta with_mean di conseguenza
+        X_transformed = self.model.named_steps['vectorizer'].fit_transform(X_train)
+        if not issparse(X_transformed):
+            self.model.named_steps['scaler'].set_params(with_mean=True)
 
-# train the model
-model_llm.fit(X_train_balanced, y_train_balanced)
+        self.model.fit(X_train, y_train)
 
-# make predictions
-y_pred = model_llm.predict(X_test_balanced)
+    def evaluate(self, X_test, y_test):
+        y_pred = self.model.predict(X_test)
+        accuracy = accuracy_score(y_test, y_pred)
+        print(f'Accuracy: {accuracy:.2f}')
+        print(classification_report(y_test, y_pred))
 
-# calculate the accuracy
-accuracy = accuracy_score(y_test_balanced, y_pred)
-print(f'Accuracy: {accuracy:.2f}')
+    def get_model(self):
+        return self.model
 
-# Initial accuracy with unbalanced dataset: 0.80
-# Initial accuracy with balanced dataset: 0.48
-
-print(classification_report(y_test_balanced, y_pred))

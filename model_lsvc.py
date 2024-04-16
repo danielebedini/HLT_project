@@ -3,24 +3,22 @@ from sklearn.pipeline import Pipeline
 from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score, classification_report
 
-from data import X_train_balanced, X_test_balanced, y_train_balanced, y_test_balanced
+class TextModelBuilder:
+    def __init__(self, max_features=10000, ngram_range=(1, 2), min_df=5, max_df=0.8):
+        tfidf = TfidfVectorizer(max_features=max_features, ngram_range=ngram_range, min_df=min_df, max_df=max_df)
+        self.model = Pipeline([
+            ('tfidf', tfidf),
+            ('clf', LinearSVC())
+        ])
 
-# here, we can tune the hyperparameters of the TfidfVectorizer
-tfidf = TfidfVectorizer(max_features=10000, ngram_range=(1, 2), min_df=5, max_df=0.8)
+    def train(self, X_train, y_train):
+        self.model.fit(X_train, y_train)
 
-# creation of a pipeline that includes the TfidfVectorizer and LinearSVC
-model_lsvc = Pipeline([
-    ('tfidf', tfidf),
-    ('clf', LinearSVC())
-])
+    def evaluate(self, X_test, y_test):
+        y_pred = self.model.predict(X_test)
+        accuracy = accuracy_score(y_test, y_pred)
+        print(f'Accuracy: {accuracy}')
+        print(classification_report(y_test, y_pred))
 
-# train the model on the training set
-model_lsvc.fit(X_train_balanced, y_train_balanced)
-
-# evaluate the model on the test set
-y_pred = model_lsvc.predict(X_test_balanced)
-accuracy = accuracy_score(y_test_balanced, y_pred)
-print(f'Accuracy: {accuracy}')
-
-# visualize the classification report
-print(classification_report(y_test_balanced, y_pred))
+    def get_model(self):
+        return self.model

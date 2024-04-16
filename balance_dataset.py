@@ -1,19 +1,41 @@
 import pandas as pd
 
-# Carica il dataset
-data = pd.read_csv('amazon_reviews.csv')
+class DataProcessor:
+    def __init__(self, input_file, output_file, down_sample_size=300, random_state=42):
+        self.input_file = input_file
+        self.output_file = output_file
+        self.down_sample_size = down_sample_size
+        self.random_state = random_state
+        self.data = None
+        self.five_star_reviews = None
+        self.not_five_star_reviews = None
+        self.final_data = None
 
-# Filtra i pattern con 5 stelle
-five_star_reviews = data[data['overall'] == 5.0]
+    def load_data(self):
+        """Carica i dati dal file CSV."""
+        self.data = pd.read_csv(self.input_file)
+        print("Dati caricati con successo.")
 
-# Esegui il down sampling a 300 pattern
-down_sampled_five_star_reviews = five_star_reviews.sample(n=300, random_state=42)  # 'random_state' per riproducibilità
+    def filter_data(self):
+        """Filtra le recensioni con 5 stelle e esegui il down sampling."""
+        self.five_star_reviews = self.data[self.data['overall'] == 5.0]
+        self.not_five_star_reviews = self.data[self.data['overall'] != 5.0]
+        print("Recensioni filtrate con successo.")
 
-# Seleziona i pattern che non hanno 5 stelle
-not_five_star_reviews = data[data['overall'] != 5.0]
+    def down_sample_data(self):
+        """Down-sampling delle recensioni a cinque stelle."""
+        down_sampled = self.five_star_reviews.sample(n=self.down_sample_size, random_state=self.random_state)
+        self.final_data = pd.concat([self.not_five_star_reviews, down_sampled])
+        print("Down-sampling completato con successo.")
 
-# Unisci i down-sampled 5 stelle con gli altri pattern
-final_data = pd.concat([not_five_star_reviews, down_sampled_five_star_reviews])
+    def save_data(self):
+        """Salva il dataset finale in un nuovo file CSV."""
+        self.final_data.to_csv(self.output_file, index=False)
+        print(f"Dati salvati con successo in {self.output_file}.")
 
-# Salva o procedi con l'analisi
-final_data.to_csv('new_balanced_data.csv', index=False)
+# Uso della classe
+processor = DataProcessor('amazon_reviews.csv', 'new_balanced_data.csv')
+processor.load_data()
+processor.filter_data()
+processor.down_sample_data()
+processor.save_data()
