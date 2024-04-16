@@ -20,6 +20,19 @@ rfc_param_grid = {
     'tfidf__max_df': [0.7, 0.8, 0.9]  # different values for max_df
 }
 
+llm_param_grid = {
+    'vectorizer__max_features': [10000, 20000, 30000],  # different values for max_features
+    'vectorizer__ngram_range': [(1, 1), (1, 2)],  # different values for ngram_range
+    'vectorizer__min_df': [5, 10],  # different values for min_df
+    'vectorizer__max_df': [0.7, 0.8, 0.9],  # different values for max_df
+    'classifier__C': [0.1, 1.0, 10.0, 100.0],  # different values for C
+    'classifier__loss': ['hinge', 'squared_hinge']  # loss functions
+}
+
+# perform the grid search for the llm
+#grid_search = GridSearchCV(model, llm_param_grid, cv=5, scoring='accuracy')
+#grid_search.fit(X_train_balanced, y_train_balanced)
+
 # for linear SVC
 grid_search = GridSearchCV(model_lsvc, lsvc_param_grid, cv=K_FOLD, scoring='accuracy')
 grid_search.fit(X_train_balanced, y_train_balanced)
