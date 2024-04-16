@@ -10,16 +10,16 @@ from utils import preprocess_text_v2
 from data import X_train_balanced, X_test_balanced, y_train_balanced, y_test_balanced
 
 # create a pipeline
-model = Pipeline([
+model_llm = Pipeline([
     ('vectorizer', CountVectorizer()),
     ('classifier', LogisticRegression())
 ])
 
 # train the model
-model.fit(X_train_balanced, y_train_balanced)
+model_llm.fit(X_train_balanced, y_train_balanced)
 
 # make predictions
-y_pred = model.predict(X_test_balanced)
+y_pred = model_llm.predict(X_test_balanced)
 
 # calculate the accuracy
 accuracy = accuracy_score(y_test_balanced, y_pred)
