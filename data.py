@@ -29,4 +29,4 @@ y = data_balanced['overall']
 
 # divide the balanced dataset into training and test sets
 
-X_train_balanced, X_test_balanced, y_train_balanced, y_test_balanced = train_test_split(X, y, test_size=0.1, random_state=42,stratify=y)
+X_train_balanced, X_test_balanced, y_train_balanced, y_test_balanced = train_test_split(X, y, test_size=0.2, random_state=42,stratify=y)
