@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from utils import preprocess_text, preprocess_text_porter_stemmer, preprocess_text_v2, preprocess_text_contractions
 
-# Carica il dataset
+# load dataset
 #data = pd.read_csv('amazon_reviews.csv')
 data_balanced = pd.read_csv('new_balanced_data.csv')
 # Visualizza le prime righe del dataset
