@@ -16,10 +16,10 @@ class DataProcessor:
         self.data = pd.read_csv(self.input_file)
         print("Dati caricati con successo.")
 
-    def filter_data(self):
+    def filter_data(self, rating=5.0):
         """Filtra le recensioni con 5 stelle e esegui il down sampling."""
-        self.five_star_reviews = self.data[self.data['overall'] == 5.0]
-        self.not_five_star_reviews = self.data[self.data['overall'] != 5.0]
+        self.five_star_reviews = self.data[self.data['overall'] == rating]
+        self.not_five_star_reviews = self.data[self.data['overall'] != rating]
         print("Recensioni filtrate con successo.")
 
     def down_sample_data(self):
