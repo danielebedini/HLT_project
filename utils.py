@@ -216,4 +216,3 @@ def plot_confusion_matrix(model, X_test, y_test):
     plt.xlabel('Predicted')
     plt.ylabel('Actual')
     plt.show()
-
