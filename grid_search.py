@@ -4,7 +4,8 @@ from data import DataPreprocessor
 from model_lsvc import TextModelBuilder
 from model_rfc import RandomForestModelBuilder
 from model_LLM import LogisticRegressionModelBuilder
-from utils import save_results_json
+from model_new import TfIdfLogisticRegressionModelBuilder
+from utils import save_results_json, plot_confusion_matrix
 
 class ModelOptimizer:
     def __init__(self, model, param_grid):
@@ -28,15 +29,24 @@ class ModelOptimizer:
     def save_results(self, filename):
         save_results_json(self.grid_search, self.accuracy, self.classification_report, filename)
 
+# load, preprocess and split unbalanced data
+unbalanced_data = DataPreprocessor('amazon_reviews.csv')
+unbalanced_data.load_and_preprocess()
+unbalanced_data.split_data()
+X_train_unbalanced, X_test_unbalanced, y_train_unbalanced, y_test_unbalanced = unbalanced_data.get_train_test_data()
 
+# load, preprocess and split balanced data
 preprocessor = DataPreprocessor('new_balanced_data.csv')
-# Carica e preprocessa i dati
 preprocessor.load_and_preprocess()
-# Divide i dati
 preprocessor.split_data()
-# Ottieni i dati di training e test
 X_train_balanced, X_test_balanced, y_train_balanced, y_test_balanced = preprocessor.get_train_test_data()
 
+
+print("Balanced Data:")
+print(f"X_train_balanced: {X_train_balanced.head()}")
+print(f"X_test_balanced: {X_test_balanced.head()}")
+
+'''
 # Creazione e allenamento del modello
 model_builder = TextModelBuilder()
 model_builder.train(X_train_balanced, y_train_balanced)
@@ -48,8 +58,9 @@ param_grid = {'clf__C': [0.1, 1.0, 10.0, 100.0], 'clf__loss': ['hinge', 'squared
 optimizer = ModelOptimizer(model, param_grid)
 optimizer.fit(X_train_balanced, y_train_balanced)
 optimizer.evaluate(X_test_balanced, y_test_balanced)
+'''
 
-
+'''
 lr_model_builder = LogisticRegressionModelBuilder(max_iter=5000, solver='liblinear')  
 lr_model_builder.train(X_train_balanced, y_train_balanced)
 lr_model_builder.evaluate(X_test_balanced, y_test_balanced)
@@ -58,23 +69,24 @@ lr_model_builder.evaluate(X_test_balanced, y_test_balanced)
 model = lr_model_builder.get_model()
 param_grid = {
     'classifier__C': [0.1, 1.0],
-    'vectorizer__max_features': [None, 5000, 10000],
+#    'vectorizer__max_features': [None, 5000, 10000],
     'vectorizer__ngram_range': [(1, 1), (1, 2)],
-    'vectorizer__min_df': [5, 10],
-    'vectorizer__max_df': [0.5,  1.0],
-    'classifier__solver': ['liblinear']  
+#    'vectorizer__min_df': [5, 10],
+#    'vectorizer__max_df': [0.5,  1.0],
+#    'classifier__solver': ['liblinear']  
 }
 optimizer = ModelOptimizer(model, param_grid)
 optimizer.fit(X_train_balanced, y_train_balanced)
 optimizer.evaluate(X_test_balanced, y_test_balanced)
+'''
 
-
-rf_model_builder = RandomForestModelBuilder()
-rf_model_builder.train(X_train_balanced, y_train_balanced)
-rf_model_builder.evaluate(X_test_balanced, y_test_balanced)
+'''
+#rf_model_builder = RandomForestModelBuilder()
+#rf_model_builder.train(X_train_balanced, y_train_balanced)
+#rf_model_builder.evaluate(X_test_balanced, y_test_balanced)
 
 # Ottimizzazione del modello
-model = rf_model_builder.get_model()
+#model = rf_model_builder.get_model()
 param_grid = {
     'clf__n_estimators': [100],
     'clf__max_depth': [None, 10],
@@ -85,7 +97,27 @@ param_grid = {
     'tfidf__min_df': [1, 5],
     'tfidf__max_df': [0.50]
 }
+#optimizer = ModelOptimizer(model, param_grid)
+#optimizer.fit(X_train_balanced, y_train_balanced)
+#optimizer.evaluate(X_test_balanced, y_test_balanced)
+'''
+
+lr_model_builder = LogisticRegressionModelBuilder(max_iter=5000)
+lr_model_builder.train(X_train_balanced, y_train_balanced)
+lr_model_builder.evaluate(X_test_balanced, y_test_balanced)
+
+# Further optimization
+model = lr_model_builder.get_model()
+param_grid = {
+    'classifier__C': [0.1, 1.0],
+    #'vectorizer__max_features': [None, 5000, 10000],
+    'vectorizer__ngram_range': [(1, 1), (1, 2)],
+    #'vectorizer__min_df': [5, 10],
+    #'vectorizer__max_df': [0.5,  1.0],
+    'classifier__solver': ['liblinear']
+}
 optimizer = ModelOptimizer(model, param_grid)
 optimizer.fit(X_train_balanced, y_train_balanced)
-optimizer.evaluate(X_test_balanced, y_test_balanced)
+optimizer.evaluate(X_test_unbalanced, y_test_unbalanced)
 
+plot_confusion_matrix(optimizer.grid_search, X_test_unbalanced, y_test_unbalanced)
