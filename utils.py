@@ -4,20 +4,14 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 import string
 import json
+import pandas as pd
 import matplotlib.pyplot as plt
+
+from contractions import contractions_dict
 
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
-
-contractions_dict = {
-    "ain't": "am not",
-    "aren't": "are not",
-    "can't": "cannot",
-    "can't've": "cannot have",
-    "could've": "could have",
-    # we can add more if needed
-}
 
 def expand_contractions(text):
     # Replace contractions using the contractions dictionary
@@ -203,8 +197,6 @@ def plot_confusion_matrix(model, X_test, y_test):
     # plot confusion matrix
     from sklearn.metrics import confusion_matrix
     import seaborn as sns
-    import pandas as pd
-    import matplotlib.pyplot as plt
 
     y_pred = model.predict(X_test)
     cm = confusion_matrix(y_test, y_pred)
