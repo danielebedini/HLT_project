@@ -8,12 +8,11 @@ from sklearn.preprocessing import FunctionTransformer
 from scipy.sparse import issparse
 
 class LogisticRegressionModelBuilder:
-    def __init__(self, max_iter=20000, solver='liblinear'):  # Modificato solver e max_iter
+    def __init__(self, max_iter=20000, solver='liblinear'):
         self.model = Pipeline([
             ('vectorizer', CountVectorizer()),
-            # Determina se usare with_mean=False basato sulla sparsità dei dati dopo il vettorizzatore
-            ('scaler', StandardScaler(with_mean=False)),  # Mantenuto basato sulla sparsità
-            ('classifier', LogisticRegression(max_iter=max_iter, solver=solver, verbose=0))  # Aggiunto verbose
+            ('scaler', StandardScaler(with_mean=False)),
+            ('classifier', LogisticRegression(max_iter=max_iter, solver=solver, verbose=0))
         ])
 
     def train(self, X_train, y_train):
