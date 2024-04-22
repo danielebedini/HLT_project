@@ -102,7 +102,7 @@ param_grid = {
 #optimizer.evaluate(X_test_balanced, y_test_balanced)
 '''
 
-lr_model_builder = LogisticRegressionModelBuilder(max_iter=5000)
+lr_model_builder = TfIdfLogisticRegressionModelBuilder(max_iter=5000)
 lr_model_builder.train(X_train_balanced, y_train_balanced)
 lr_model_builder.evaluate(X_test_balanced, y_test_balanced)
 
