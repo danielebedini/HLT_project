@@ -208,3 +208,20 @@ def plot_confusion_matrix(model, X_test, y_test):
     plt.xlabel('Predicted')
     plt.ylabel('Actual')
     plt.show()
+
+def get_wordcloud(data, overall):
+    from wordcloud import WordCloud
+
+    # Give the cloud only 1 star reviews
+    # change the value to 2, 3, 4, or 5 to see the word cloud for other ratings
+    data = data[data['overall'] == overall]['reviewText'].values
+
+    # Create a word cloud
+    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(' '.join(data))
+    
+    # Display the word cloud
+    plt.figure(figsize=(10, 6))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis('off')
+    plt.show()
+
