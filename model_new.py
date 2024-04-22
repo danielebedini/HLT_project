@@ -3,8 +3,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, classification_report
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import FunctionTransformer
 from scipy.sparse import issparse
 
 # As suggested, we use TfidfVectorizer instead of CountVectorizer with logistic regression
