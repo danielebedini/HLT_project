@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from utils import preprocess_text_v2, preprocess_text_contractions
+from utils import preprocess_text_v2, preprocess_text_contractions, get_wordcloud, oversampler
 
 class DataPreprocessor:
     def __init__(self, file_path):
@@ -15,7 +15,7 @@ class DataPreprocessor:
         """Carica e preprocessa i dati."""
         self.data = pd.read_csv(self.file_path)
         print("Dati caricati con successo.")
-        self.data['CleanedText'] = self.data['reviewText'].apply(preprocess_text_contractions)
+        self.data['CleanedText'] = self.data['reviewText'].apply(preprocess_text_v2)
         self.data = self.data.dropna(subset=['CleanedText'])
         print("Preprocessamento completato.")
 
@@ -31,3 +31,8 @@ class DataPreprocessor:
     def get_train_test_data(self):
         """Ritorna i dati di training e test."""
         return self.X_train, self.X_test, self.y_train, self.y_test
+    
+    def oversample(self):
+        """Esegue il resampling dei dati."""
+        self.X_train, self.y_train = oversampler(self.X_train, self.y_train)
+        print("Resampling completato.")
