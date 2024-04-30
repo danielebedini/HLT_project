@@ -13,6 +13,8 @@ nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
 
+#custom_stopwords = ['phone', 'card', 'SanDisk', 'memory', 'stick', 'drive', 'usb', 'device', 'product', 'item', 'thing']
+
 def expand_contractions(text):
     # Replace contractions using the contractions dictionary
     for contraction, expansion in contractions_dict.items():
@@ -83,6 +85,7 @@ def preprocess_text_v2(text):
         
         # Remove stopwords
         stop_words = set(stopwords.words('english'))
+        #stop_words.update(custom_stopwords)
         tokens = [token for token in tokens if token not in stop_words]
         
         # Lemmatization
@@ -225,3 +228,11 @@ def get_wordcloud(data, overall):
     plt.axis('off')
     plt.show()
 
+def oversampler(X_train, y_train):
+    from imblearn.over_sampling import RandomOverSampler
+
+    oversampler = RandomOverSampler(random_state=42)
+    X_train, y_train = oversampler.fit_resample(X_train.values.reshape(-1, 1), y_train)
+    X_train = X_train.flatten()
+
+    return X_train, y_train
