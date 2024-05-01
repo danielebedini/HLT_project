@@ -54,7 +54,7 @@ print(f"X_test_unbalanced: {X_test_unbalanced.head()}")
 
 # Linear SVC model
 
-'''
+
 # Creazione e allenamento del modello
 model_builder = TextModelBuilder()
 model_builder.train(X_train_balanced, y_train_balanced)
@@ -62,99 +62,104 @@ model_builder.evaluate(X_test_balanced, y_test_balanced)
 
 # Ottimizzazione del modello
 model = model_builder.get_model()
-param_grid = {'clf__C': [0.1, 1.0, 10.0, 100.0], 'clf__loss': ['hinge', 'squared_hinge']}
+param_grid = {
+    'clf__C': [0.01, 0.1, 1, 10, 100],
+    'clf__loss': ['hinge', 'squared_hinge'],
+    'clf__class_weight': [None, 'balanced']
+}
 optimizer = ModelOptimizer(model, param_grid)
 optimizer.fit(X_train_balanced, y_train_balanced)
 optimizer.evaluate(X_test_balanced, y_test_balanced)
-'''
+
+plot_confusion_matrix(model_builder.get_model(), X_test_balanced, y_test_balanced,model_name="Linear SVC")
 
 # Logistic regression model (with count vectorizer)
-'''
+
 lr_model_builder = LogisticRegressionModelBuilder(max_iter=5000, solver='liblinear')  
 lr_model_builder.train(X_train_balanced, y_train_balanced)
-lr_model_builder.evaluate(X_test_unbalanced, y_test_unbalanced)
+lr_model_builder.evaluate(X_test_balanced, y_test_balanced)
 
-#plot_confusion_matrix(lr_model_builder.get_model(), X_test_unbalanced, y_test_unbalanced)
 
 # Further optimization
 model = lr_model_builder.get_model()
 param_grid = {
-    'classifier__C': [0.1, 1.0],
-#    'classifier__solver': ['liblinear'],
-    'vectorizer__max_features': [None, 5000, 10000],
-#    'vectorizer__ngram_range': [(1, 1), (1, 2)],
-#    'vectorizer__min_df': [5, 10],
-#    'vectorizer__max_df': [0.5,  1.0],
+    'classifier__C': [0.01, 0.1, 1, 10],
+    'vectorizer__max_features': [None, 5000, 10000, 20000],
+    'vectorizer__ngram_range': [(1, 1), (1, 2)],
+    'vectorizer__min_df': [1, 5, 10],
+    'vectorizer__max_df': [0.5, 0.75, 1.0]
 }
 optimizer = ModelOptimizer(model, param_grid)
 optimizer.fit(X_train_balanced, y_train_balanced)
-optimizer.evaluate(X_test_unbalanced, y_test_unbalanced)
-'''
+optimizer.evaluate(X_test_balanced, y_test_balanced)
+
+plot_confusion_matrix(lr_model_builder.get_model(), X_test_balanced, y_test_balanced,model_name="Logistic Regression")
 
 # Random forest model
 
-'''
-#rf_model_builder = RandomForestModelBuilder()
-#rf_model_builder.train(X_train_balanced, y_train_balanced)
-#rf_model_builder.evaluate(X_test_balanced, y_test_balanced)
+
+rf_model_builder = RandomForestModelBuilder()
+rf_model_builder.train(X_train_balanced, y_train_balanced)
+rf_model_builder.evaluate(X_test_balanced, y_test_balanced)
 
 # Ottimizzazione del modello
-#model = rf_model_builder.get_model()
+model = rf_model_builder.get_model()
 param_grid = {
-    'clf__n_estimators': [100],
-    'clf__max_depth': [None, 10],
-    'clf__min_samples_split': [2],
+    'clf__n_estimators': [100, 200, 500],
+    'clf__max_depth': [None, 10, 20, 50],
+    'clf__min_samples_split': [2, 5, 10],
     'clf__min_samples_leaf': [1, 2, 4],
-    'tfidf__max_features': [None, 5000],
-    'tfidf__ngram_range': [(1, 1)],
+    'tfidf__max_features': [None, 5000, 10000],
+    'tfidf__ngram_range': [(1, 1), (1, 2)],
     'tfidf__min_df': [1, 5],
-    'tfidf__max_df': [0.50]
+    'tfidf__max_df': [0.5, 0.75]
 }
-#optimizer = ModelOptimizer(model, param_grid)
-#optimizer.fit(X_train_balanced, y_train_balanced)
-#optimizer.evaluate(X_test_balanced, y_test_balanced)
-'''
+optimizer = ModelOptimizer(model, param_grid)
+optimizer.fit(X_train_balanced, y_train_balanced)
+optimizer.evaluate(X_test_balanced, y_test_balanced)
 
-# New model suggested by the professor
+plot_confusion_matrix(rf_model_builder.get_model(), X_test_balanced, y_test_balanced,model_name="Random Forest")
 
-'''
+# New model suggested by the professor 
+
+
 lr_model_builder = TfIdfLogisticRegressionModelBuilder()
 lr_model_builder.train(X_train_balanced, y_train_balanced)
-lr_model_builder.evaluate(X_test_unbalanced, y_test_unbalanced)
+lr_model_builder.evaluate(X_test_balanced, y_test_balanced)
 
 # Further optimization
 model = lr_model_builder.get_model()
 param_grid = {
-    'classifier__C': [0.1, 1.0],
-    #'vectorizer__max_features': [None, 5000, 10000],
+    'classifier__C': [0.01, 0.1, 1, 10],
     'vectorizer__ngram_range': [(1, 1), (1, 2)],
-    #'vectorizer__min_df': [5, 10],
-    'vectorizer__max_df': [0.5,  1.0],
-    'classifier__solver': ['liblinear']
+    'vectorizer__max_df': [0.5, 0.75, 1.0],
+    'classifier__solver': ['liblinear', 'saga']
 }
 optimizer = ModelOptimizer(model, param_grid)
 optimizer.fit(X_train_balanced, y_train_balanced)
-optimizer.evaluate(X_test_unbalanced, y_test_unbalanced)
-'''
+optimizer.evaluate(X_test_balanced, y_test_balanced)
+
+plot_confusion_matrix(lr_model_builder.get_model(), X_test_balanced, y_test_balanced,model_name="Suggested by the professor")
+
 
 # Naive bayes model
 
 nb_model = NaiveBayesModelBuilder()
 nb_model.train(X_train_balanced, y_train_balanced)
-nb_model.evaluate(X_test_unbalanced, y_test_unbalanced)
+nb_model.evaluate(X_test_balanced, y_test_balanced)
 
 # Further optimization
 model = nb_model.get_model()
 param_grid = {
-    'clf__alpha': [0.1, 1.0, 10.0],
-    'tfidf__max_features': [None, 5000, 10000],
+    'clf__alpha': [0.01, 0.1, 1, 10],
+    'tfidf__max_features': [5000, 10000, 20000],
     'tfidf__ngram_range': [(1, 1), (1, 2)],
-    'tfidf__min_df': [5, 10],
-    'tfidf__max_df': [0.5,  1.0],
+    'tfidf__min_df': [1, 5, 10],
+    'tfidf__max_df': [0.5, 0.75, 1.0],
     'tfidf__stop_words': [None, 'english']
 }
 optimizer = ModelOptimizer(model, param_grid)
 optimizer.fit(X_train_balanced, y_train_balanced)
-optimizer.evaluate(X_test_unbalanced, y_test_unbalanced)
+optimizer.evaluate(X_test_balanced, y_test_balanced)
 
-plot_confusion_matrix(nb_model.get_model(), X_test_unbalanced, y_test_unbalanced)
+plot_confusion_matrix(nb_model.get_model(), X_test_balanced, y_test_balanced,model_name="Naive Bayes")

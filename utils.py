@@ -196,7 +196,7 @@ def plot_pie_graph(data):
     plt.ylabel('Count')
     plt.show()
 
-def plot_confusion_matrix(model, X_test, y_test):
+def plot_confusion_matrix(model, X_test, y_test,model_name):
     # plot confusion matrix
     from sklearn.metrics import confusion_matrix
     import seaborn as sns
@@ -207,7 +207,7 @@ def plot_confusion_matrix(model, X_test, y_test):
     cm_df = pd.DataFrame(cm, index=[i for i in range(1, 6)], columns=[i for i in range(1, 6)])
     plt.figure(figsize=(10, 6))
     sns.heatmap(cm_df, annot=True, fmt='g')
-    plt.title('Confusion Matrix')
+    plt.title('Confusion Matrix of the Model '+model_name)
     plt.xlabel('Predicted')
     plt.ylabel('Actual')
     plt.show()
