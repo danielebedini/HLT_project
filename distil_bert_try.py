@@ -67,6 +67,13 @@ class DistilBertModelBuilder:
 
     def get_model(self):
         return self.model
+    
+    def save_weights(self, path):
+        self.model.save_pretrained(path)
+    
+    def load_weights(self, path):
+        self.model = DistilBertForSequenceClassification.from_pretrained(path)
+    
 
 if __name__ == '__main__':
 
@@ -93,9 +100,16 @@ if __name__ == '__main__':
     # L'oversampling viene applicato solo ai dati di training per evitare bias
     X_train_unbalanced, X_val_unbalanced, X_test_unbalanced, y_train_unbalanced, y_val_unbalanced, y_test_unbalanced = unbalanced_data.get_train_val_test_data()
 
+    # set labels to integer 0 to 4 from 1 to 5
+    y_train_unbalanced = [int(label-1) for label in y_train_unbalanced]
+    y_val_unbalanced = [int(label-1) for label in y_val_unbalanced]
+    y_test_unbalanced = [int(label-1) for label in y_test_unbalanced]
+
     # Valutazione su dati non bilanciati
     model.evaluate(X_test_unbalanced, y_test_unbalanced)
 
+    model.save_weights('distilbert_weights')
+    
     # Creazione e visualizzazione della matrice di confusione
     plot_confusion_matrix(model.get_model(), X_test_unbalanced, y_test_unbalanced, 'DistilBert')
 
