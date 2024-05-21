@@ -196,7 +196,7 @@ def plot_pie_graph(data):
     plt.ylabel('Count')
     plt.show()
 
-def plot_confusion_matrix(model, X_test, y_test,model_name):
+def plot_confusion_matrix(model, X_test, y_test, model_name):
     # plot confusion matrix
     from sklearn.metrics import confusion_matrix
     import seaborn as sns
@@ -236,3 +236,19 @@ def oversampler(X_train, y_train):
     X_train = X_train.flatten()
 
     return X_train, y_train
+
+def plot_cm_distilbert(model, X_test, y_test): # TODO: test this, not working   
+    """Plots the confusion matrix for the distilBERT model."""
+    from sklearn.metrics import confusion_matrix
+    import seaborn as sns
+
+    y_pred = model.predict(X_test)
+    y_pred = [np.argmax(pred) for pred in y_pred]
+    cm = confusion_matrix(y_test, y_pred)
+    cm_df = pd.DataFrame(cm, index=[i for i in range(1, 6)], columns=[i for i in range(1, 6)])
+    plt.figure(figsize=(10, 6))
+    sns.heatmap(cm_df, annot=True, fmt='g')
+    plt.title('Confusion Matrix')
+    plt.xlabel('Predicted')
+    plt.ylabel('Actual')
+    plt.show()
