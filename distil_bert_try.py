@@ -42,18 +42,20 @@ class DistilBertModelBuilder:
             weight_decay=0.01,
             logging_dir='./logs',
             logging_steps=10,
+            report_to='wandb'
         )
 
         self.trainer = Trainer(
             model=self.model,
             args=training_args,
             train_dataset=train_dataset,
-            eval_dataset=val_dataset
+            eval_dataset=val_dataset,
+            compute_metrics=lambda pred: {'accuracy': accuracy_score(y_val, np.argmax(pred.predictions, axis=1))}
         )
 
         self.trainer.train()
 
-    def evaluate(self, X_test, y_test):
+    def predict(self, X_test, y_test):
         test_dataset = SentimentDataset(X_test, y_test, self.tokenizer, self.max_length)
         predictions = self.trainer.predict(test_dataset)
         print(f"Predictions shape: {predictions.predictions.shape}")  # Dimensioni dell'output del modello
@@ -68,48 +70,32 @@ class DistilBertModelBuilder:
     def get_model(self):
         return self.model
     
-    def save_weights(self, path):
-        self.model.save_pretrained(path)
-    
-    def load_weights(self, path):
-        self.model = DistilBertForSequenceClassification.from_pretrained(path)
-    
 
 if __name__ == '__main__':
-
     # load, preprocess and split balanced data
-    preprocessor = DataPreprocessor('balanced_train_data.csv')
+    from data import DataPreprocessor
+    preprocessor = DataPreprocessor('new_balanced_data.csv')
     preprocessor.load_and_preprocess()
     preprocessor.split_data()
     #preprocessor.oversample()
-    X_train_balanced, X_val_balanced, X_test_balanced, y_train_balanced, y_val_balanced, y_test_balanced = preprocessor.get_train_val_test_data()
+    X_train, X_val, X_test, y_train, y_val, y_test = preprocessor.get_train_val_test_data()
 
-    # set labels to integer 0 to 4 from 1 to 5
-    y_train_balanced = [int(label-1) for label in y_train_balanced]
-    y_val_balanced = [int(label-1) for label in y_val_balanced]
-    y_test_balanced = [int(label-1) for label in y_test_balanced]
-    
+    # convert X_train, X_val, X_test to list of strings
+    X_train = [str(text) for text in X_train]
+    X_val = [str(text) for text in X_val]
+    X_test = [str(text) for text in X_test]
+
+    # convert labels into list of integers
+    y_train = [int(label-1) for label in y_train]
+    y_val = [int(label-1) for label in y_val]
+    y_test = [int(label-1) for label in y_test]
+
+    print(f"Train size: {len(X_train)}")
+    print(f"Validation size: {len(X_val)}")
+    print(f"Test size: {len(X_test)}")
+
     model = DistilBertModelBuilder(num_labels=5)
-    model.train(X_train_balanced, y_train_balanced, X_val_balanced, y_val_balanced)
-    model.evaluate(X_test_balanced, y_test_balanced)
 
-    # Gestione dei dati non bilanciati per confronto
-    unbalanced_data = DataPreprocessor('unbalanced_test_data.csv')
-    unbalanced_data.load_and_preprocess()
-    unbalanced_data.split_data()
-    # L'oversampling viene applicato solo ai dati di training per evitare bias
-    X_train_unbalanced, X_val_unbalanced, X_test_unbalanced, y_train_unbalanced, y_val_unbalanced, y_test_unbalanced = unbalanced_data.get_train_val_test_data()
+    model.train(X_train, y_train, X_val, y_val, epochs=3, batch_size=8)
 
-    # set labels to integer 0 to 4 from 1 to 5
-    y_train_unbalanced = [int(label-1) for label in y_train_unbalanced]
-    y_val_unbalanced = [int(label-1) for label in y_val_unbalanced]
-    y_test_unbalanced = [int(label-1) for label in y_test_unbalanced]
-
-    # Valutazione su dati non bilanciati
-    model.evaluate(X_test_unbalanced, y_test_unbalanced)
-
-    model.save_weights('distilbert_weights')
-    
-    # Creazione e visualizzazione della matrice di confusione
-    plot_confusion_matrix(model.get_model(), X_test_unbalanced, y_test_unbalanced, 'DistilBert')
-
+    model.predict(X_test, y_test)
