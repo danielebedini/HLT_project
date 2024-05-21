@@ -72,6 +72,16 @@ class DataProcessor:
 
 
 if __name__ == "__main__":
+
+    import matplotlib.pyplot as plt
+
+    def plot_cake_graph(dataset, title):
+        """Plot cake graph of a given dataset."""
+        # Plot cake graph
+        dataset['overall'].value_counts().plot(kind='pie', autopct='%1.1f%%', startangle=90, title=title)
+        plt.axis('equal')
+        plt.show()
+
     # Usage of the class
     processor = DataProcessor('amazon_reviews.csv', down_sample_size=300)
     processor.load_data()
@@ -82,6 +92,8 @@ if __name__ == "__main__":
     processor.print_len_reviews()
     processor.save_data('balanced_train_data.csv', 'unbalanced_test_data.csv')
     # print("Overlaps: ", processor.check_overlaps())
+    plot_cake_graph(processor.train_data_balanced, 'Balanced Training Set')
+    plot_cake_graph(processor.test_data_unbalanced, 'Unbalanced Test Set')
 
     """
     print("Balanced training set:")

@@ -1,7 +1,7 @@
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score, classification_report
 from data import DataPreprocessor
-from model_lsvc import TextModelBuilder
+from model_lsvc import LSVCModelBuilder
 from model_rfc import RandomForestModelBuilder
 from model_LLM import LogisticRegressionModelBuilder
 from model_new import TfIdfLogisticRegressionModelBuilder
@@ -30,51 +30,55 @@ class ModelOptimizer:
     def save_results(self, filename):
         save_results_json(self.grid_search, self.accuracy, self.classification_report, filename)
 
-# load, preprocess and split unbalanced data
-unbalanced_data = DataPreprocessor('amazon_reviews.csv')
-unbalanced_data.load_and_preprocess()
-unbalanced_data.split_data()
-X_train_unbalanced, X_test_unbalanced, y_train_unbalanced, y_test_unbalanced = unbalanced_data.get_train_test_data()
+    def get_model(self):
+        return self.grid_search.best_estimator_
 
-# load, preprocess and split balanced data
+ # load, preprocess and split balanced data
 preprocessor = DataPreprocessor('new_balanced_data.csv')
 preprocessor.load_and_preprocess()
 preprocessor.split_data()
-X_train_balanced, X_test_balanced, y_train_balanced, y_test_balanced = preprocessor.get_train_test_data()
+preprocessor.oversample()
+X_train_balanced, X_val_balanced, X_test_balanced, y_train_balanced, y_val_balanced, y_test_balanced = preprocessor.get_train_val_test_data()
 
+unbalanced_data = DataPreprocessor('amazon_reviews.csv')
+unbalanced_data.load_and_preprocess()
+unbalanced_data.split_data()
+unbalanced_data.oversample()
+X_train_unbalanced, X_val_unbalanced, X_test_unbalanced, y_train_unbalanced, y_val_unbalanced, y_test_unbalanced = unbalanced_data.get_train_val_test_data()
 
-print("Balanced Data:")
-print(f"X_train_balanced: {X_train_balanced.head()}")
-print(f"X_test_balanced: {X_test_balanced.head()}")
+print("Balanced data:")
+print("TR balanced: ", len(X_train_balanced))
+print("VL balanced: ", len(X_val_balanced))
+print("TS balanced: ", len(X_test_balanced))
 
-print("Unbalanced Data:")
-print(f"X_train_unbalanced: {X_train_unbalanced.head()}")
-print(f"X_test_unbalanced: {X_test_unbalanced.head()}")
-
+print("Unbalanced data:")
+print("TR unbalanced: ", len(X_train_unbalanced))
+print("VL unbalanced: ", len(X_val_unbalanced))
+print("TS unbalanced: ", len(X_test_unbalanced))
 
 # Linear SVC model
 
-
-# Creazione e allenamento del modello
-model_builder = TextModelBuilder()
+model_builder = LSVCModelBuilder()
 model_builder.train(X_train_balanced, y_train_balanced)
-model_builder.evaluate(X_test_balanced, y_test_balanced)
+model_builder.evaluate(X_val_unbalanced, y_val_unbalanced)
 
-# Ottimizzazione del modello
+# Further optimization
 model = model_builder.get_model()
 param_grid = {
     'clf__C': [0.01, 0.1, 1, 10, 100],
     'clf__loss': ['hinge', 'squared_hinge'],
     'clf__class_weight': [None, 'balanced']
 }
+
 optimizer = ModelOptimizer(model, param_grid)
 optimizer.fit(X_train_balanced, y_train_balanced)
-optimizer.evaluate(X_test_balanced, y_test_balanced)
+optimizer.evaluate(X_test_unbalanced, y_test_unbalanced)
 
-plot_confusion_matrix(model_builder.get_model(), X_test_balanced, y_test_balanced,model_name="Linear SVC")
+plot_confusion_matrix(optimizer.get_model(), X_val_unbalanced, y_val_unbalanced, model_name="Linear SVC")
 
 # Logistic regression model (with count vectorizer)
 
+'''
 lr_model_builder = LogisticRegressionModelBuilder(max_iter=5000, solver='liblinear')  
 lr_model_builder.train(X_train_balanced, y_train_balanced)
 lr_model_builder.evaluate(X_test_balanced, y_test_balanced)
@@ -94,10 +98,11 @@ optimizer.fit(X_train_balanced, y_train_balanced)
 optimizer.evaluate(X_test_balanced, y_test_balanced)
 
 plot_confusion_matrix(lr_model_builder.get_model(), X_test_balanced, y_test_balanced,model_name="Logistic Regression")
+'''
+
 
 # Random forest model
-
-
+'''
 rf_model_builder = RandomForestModelBuilder()
 rf_model_builder.train(X_train_balanced, y_train_balanced)
 rf_model_builder.evaluate(X_test_balanced, y_test_balanced)
@@ -119,9 +124,11 @@ optimizer.fit(X_train_balanced, y_train_balanced)
 optimizer.evaluate(X_test_balanced, y_test_balanced)
 
 plot_confusion_matrix(rf_model_builder.get_model(), X_test_balanced, y_test_balanced,model_name="Random Forest")
+'''
 
 # New model suggested by the professor 
 
+'''
 
 lr_model_builder = TfIdfLogisticRegressionModelBuilder()
 lr_model_builder.train(X_train_balanced, y_train_balanced)
@@ -140,9 +147,10 @@ optimizer.fit(X_train_balanced, y_train_balanced)
 optimizer.evaluate(X_test_balanced, y_test_balanced)
 
 plot_confusion_matrix(lr_model_builder.get_model(), X_test_balanced, y_test_balanced,model_name="Suggested by the professor")
-
+'''
 
 # Naive bayes model
+'''
 
 nb_model = NaiveBayesModelBuilder()
 nb_model.train(X_train_balanced, y_train_balanced)
@@ -163,3 +171,4 @@ optimizer.fit(X_train_balanced, y_train_balanced)
 optimizer.evaluate(X_test_balanced, y_test_balanced)
 
 plot_confusion_matrix(nb_model.get_model(), X_test_balanced, y_test_balanced,model_name="Naive Bayes")
+'''

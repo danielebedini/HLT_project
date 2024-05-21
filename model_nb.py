@@ -27,27 +27,31 @@ class NaiveBayesModelBuilder:
 
     def get_model(self):
         return self.model
+    
 
 if __name__ == '__main__':
     from data import DataPreprocessor
-
+    from data_2 import X_train, X_test, y_train, y_test
+    '''
     # load, preprocess and split balanced data
     preprocessor = DataPreprocessor('new_balanced_data.csv')
     preprocessor.load_and_preprocess()
     preprocessor.split_data()
     preprocessor.oversample()
     X_train_balanced, X_val_balanced, X_test_balanced, y_train_balanced, y_val_balanced, y_test_balanced = preprocessor.get_train_val_test_data()
+    '''
 
-    unbalanced_data = DataPreprocessor('amazon_reviews.csv')
+    unbalanced_data = DataPreprocessor('unbalanced_test_data.csv')
     unbalanced_data.load_and_preprocess()
     unbalanced_data.split_data()
     unbalanced_data.oversample()
     X_train_unbalanced, X_val_unbalanced, X_test_unbalanced, y_train_unbalanced, y_val_unbalanced, y_test_unbalanced = unbalanced_data.get_train_val_test_data()
 
     model_nb = NaiveBayesModelBuilder()
-    model_nb.train(X_train_balanced, y_train_balanced)
+    model_nb.train(X_train, y_train)
     model_nb.evaluate(X_val_unbalanced, y_val_unbalanced)
     #model_nb.evaluate(X_test_unbalanced, y_test_unbalanced)
 
-    plot_confusion_matrix(model_nb.get_model(), X_val_unbalanced, y_val_unbalanced, 'Naive Bayes')
+    plot_confusion_matrix(model_nb.get_model(), X_test, y_test, 'Naive Bayes')
+    plot_confusion_matrix(model_nb.get_model(), X_test_unbalanced, y_test_unbalanced, 'Naive Bayes')
     #plot_confusion_matrix(model_nb.get_model(), X_test_unbalanced, y_test_unbalanced, 'Naive Bayes')

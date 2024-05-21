@@ -56,7 +56,6 @@ class DataPreprocessor:
         self.X_train, self.y_train = oversampler(self.X_train, self.y_train)
         print("Resampling completed.")
 
-
 preprocessor = DataPreprocessor('balanced_train_data.csv')
 preprocessor.load_and_preprocess()
 preprocessor.split_data()
@@ -77,5 +76,3 @@ if __name__ == '__main__':
     print("TRAIN balanced data: ", len(X_train_unbalanced))
     print("VAL balanced data: ", len(X_val_unbalanced))
     print("TEST balanced data: ", len(X_test_unbalanced))
-
-
