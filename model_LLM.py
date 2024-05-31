@@ -35,13 +35,13 @@ class LogisticRegressionModelBuilder:
         return self.model
 
 if __name__ == "__main__":
-    from data import X_train, X_test_unbalanced, y_train, y_test_unbalanced, X_val_unbalanced, y_val_unbalanced
+    #from data import X_train, X_test_unbalanced, y_train, y_test_unbalanced, X_val_unbalanced, y_val_unbalanced
+    from data_2 import X_train, X_test, y_train, y_test
     from utils import plot_confusion_matrix
-
     model_builder = LogisticRegressionModelBuilder()
     model_builder.train(X_train, y_train)
-    model_builder.evaluate(X_val_unbalanced, y_val_unbalanced)
+    model_builder.evaluate(X_test, y_test)
     #model_builder.evaluate(X_test_unbalanced, y_test_unbalanced)
 
-    plot_confusion_matrix(model_builder.get_model(), X_val_unbalanced, y_val_unbalanced, 'Logistic Regression')
+    plot_confusion_matrix(model_builder.get_model(), X_test, y_test, 'Count Vectorizer with Logistic Regression')
     #plot_confusion_matrix(model_builder.get_model(), X_test_unbalanced, y_test_unbalanced, 'Logistic Regression')

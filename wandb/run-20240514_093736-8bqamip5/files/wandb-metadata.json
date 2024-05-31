@@ -1,0 +1,48 @@
+{
+    "os": "macOS-14.4.1-arm64-arm-64bit",
+    "python": "3.11.5",
+    "heartbeatAt": "2024-05-14T07:37:37.056124",
+    "startedAt": "2024-05-14T07:37:36.388716",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "<python with no main file>",
+    "codePathLocal": null,
+    "git": {
+        "remote": "https://github.com/danielebedini/HLT_project.git",
+        "commit": "58fccdc5381937875dda13f6b89a592149a8661c"
+    },
+    "email": "108469620+danielebedini@users.noreply.github.com",
+    "root": "/Users/danielebedini/Documents/Universita\u0300/Magistrale/Second semester/HLT/HLT_project",
+    "host": "MacBook-Air-di-Daniele-3.local",
+    "username": "danielebedini",
+    "executable": "/opt/homebrew/anaconda3/envs/ai/bin/python",
+    "cpu_count": 8,
+    "cpu_count_logical": 8,
+    "cpu_freq": {
+        "current": 3504,
+        "min": 600,
+        "max": 3504
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3504,
+            "min": 600,
+            "max": 3504
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 228.27386474609375,
+            "used": 91.53250503540039
+        }
+    },
+    "gpuapple": {
+        "type": "arm",
+        "vendor": "Apple"
+    },
+    "memory": {
+        "total": 8.0
+    }
+}

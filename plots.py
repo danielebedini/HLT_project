@@ -1,4 +1,4 @@
-from utils import plot_accuracy, plot_dataset_data, plot_pie_graph
+from utils import plot_dataset_data, plot_pie_graph
 from data import DataPreprocessor
 
 not_balanced_data = DataPreprocessor('amazon_reviews.csv')

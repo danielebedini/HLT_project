@@ -23,7 +23,7 @@ class DataPreprocessor:
         self.data = self.data.dropna(subset=['CleanedText'])
         print("Preprocessing completed.")
 
-    def split_data(self, test_size=0.2, validation_size=0.25, random_state=42, stratify_column='overall'):
+    def split_data(self, test_size=0.25, validation_size=0.25, random_state=42, stratify_column='overall'):
         """Split data into training, validation, and test sets."""
         X = self.data['CleanedText']
         y = self.data[stratify_column]
@@ -56,19 +56,22 @@ class DataPreprocessor:
         self.X_train, self.y_train = oversampler(self.X_train, self.y_train)
         print("Resampling completed.")
 
-preprocessor = DataPreprocessor('balanced_train_data.csv')
-preprocessor.load_and_preprocess()
-preprocessor.split_data()
-preprocessor.oversample()
-X_train, X_val, X_test, y_train, y_val, y_test = preprocessor.get_train_val_test_data()
 
-unbalanced_data = DataPreprocessor('unbalanced_test_data.csv')
-unbalanced_data.load_and_preprocess()
-unbalanced_data.split_data()
-unbalanced_data.oversample()
-X_train_unbalanced, X_val_unbalanced, X_test_unbalanced, y_train_unbalanced, y_val_unbalanced, y_test_unbalanced = unbalanced_data.get_train_val_test_data()
 
 if __name__ == '__main__':
+
+    preprocessor = DataPreprocessor('balanced_train_data.csv')
+    preprocessor.load_and_preprocess()
+    preprocessor.split_data()
+    preprocessor.oversample()
+    X_train, X_val, X_test, y_train, y_val, y_test = preprocessor.get_train_val_test_data()
+
+    unbalanced_data = DataPreprocessor('unbalanced_test_data.csv')
+    unbalanced_data.load_and_preprocess()
+    unbalanced_data.split_data()
+    unbalanced_data.oversample()
+    X_train_unbalanced, X_val_unbalanced, X_test_unbalanced, y_train_unbalanced, y_val_unbalanced, y_test_unbalanced = unbalanced_data.get_train_val_test_data()
+
     print("TRAIN unbalanced data: ", len(X_train))
     print("VAL unbalanced data: ", len(X_val))
     print("TEST unbalanced data: ", len(X_test))

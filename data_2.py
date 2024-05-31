@@ -3,6 +3,7 @@
 - Use the whole unbalanced dataset for validation and testing.
 """
 import pandas as pd
+import matplotlib.pyplot as plt
 from utils import preprocess_text_v2
 from sklearn.model_selection import train_test_split
 
@@ -11,6 +12,13 @@ def preprocess(X):
     X = X.apply(preprocess_text_v2)
     X = X.dropna()
     return X
+
+def plot_cake_graph(dataset, title):
+    """Plot cake graph of a given dataset."""
+    # Plot cake graph
+    dataset['overall'].value_counts().plot(kind='pie', autopct='%1.1f%%', startangle=90, title=title)
+    plt.axis('equal')
+    plt.show()
 
 # Load and preprocess balanced training data
 
@@ -64,3 +72,9 @@ X_test = X_test.values.tolist()
 #print(y_val.shape)
 
 print("Testing data preprocessed successfully!")
+
+if __name__ == '__main__':
+
+    # Plot cake graph
+    plot_cake_graph(train_data, "Balanced Training Data")   
+    plot_cake_graph(test_data, "Unbalanced Test Data")

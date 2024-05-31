@@ -1,0 +1,2 @@
+
+[34m[1mwandb[39m[22m: [32m[41mERROR[39m[49m X contains values that are not numbers. Please vectorize, label encode or one hot encode X and call the plotting function again.

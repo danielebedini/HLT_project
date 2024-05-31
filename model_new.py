@@ -38,14 +38,8 @@ class TfIdfLogisticRegressionModelBuilder:
 
 
 if __name__ == '__main__':
-    from data import DataPreprocessor
+    #from data import DataPreprocessor
     from data_2 import X_train, X_test, y_train, y_test
-
-    unbalanced_data = DataPreprocessor('unbalanced_test_data.csv')
-    unbalanced_data.load_and_preprocess()
-    unbalanced_data.split_data()
-    unbalanced_data.oversample()
-    _, _, X_test_unbalanced, _, _, y_test_unbalanced = unbalanced_data.get_train_val_test_data()
 
     '''
     # load, preprocess and split balanced data
@@ -67,6 +61,6 @@ if __name__ == '__main__':
     model_builder.evaluate(X_test, y_test)
     #model_builder.evaluate(X_test_unbalanced, y_test_unbalanced)
 
-    plot_confusion_matrix(model_builder.get_model(), X_test, y_test, 'Logistic Regression')
-    plot_confusion_matrix(model_builder.get_model(), X_test_unbalanced, y_test_unbalanced, 'Logistic Regression')
+    plot_confusion_matrix(model_builder.get_model(), X_test, y_test, 'TF-IDF Logistic Regression')
+    #plot_confusion_matrix(model_builder.get_model(), X_test_unbalanced, y_test_unbalanced, 'TF-IDF Logistic Regression')
     #plot_confusion_matrix(model_builder.get_model(), X_test_unbalanced, y_test_unbalanced, 'Logistic Regression')
