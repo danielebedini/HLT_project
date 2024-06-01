@@ -1,12 +1,15 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from utils import preprocess_text_v2, preprocess_text_contractions, get_wordcloud, oversampler
+from utils import preprocess_text_v2, oversampler
 from sklearn.model_selection import train_test_split
 
 
 class DataPreprocessor:
-    def __init__(self, file_path):
+    def __init__(self, file_path=None, train_file=None, val_file=None, test_file=None):
         self.file_path = file_path
+        self.train_file = train_file
+        self.val_file = val_file
+        self.test_file = test_file
         self.data = None
         self.X_train = None
         self.X_val = None
@@ -17,14 +20,35 @@ class DataPreprocessor:
 
     def load_and_preprocess(self):
         """Load and preprocess data."""
-        self.data = pd.read_csv(self.file_path)
-        print("Data preprocessed successfully!")
-        self.data['CleanedText'] = self.data['reviewText'].apply(preprocess_text_v2)
-        self.data = self.data.dropna(subset=['CleanedText'])
-        print("Preprocessing completed.")
+        if self.file_path:
+            self.data = pd.read_csv(self.file_path)
+            print("Data preprocessed successfully!")
+            self.data['CleanedText'] = self.data['reviewText'].apply(preprocess_text_v2)
+            self.data = self.data.dropna(subset=['CleanedText'])
+            print("Preprocessing completed.")
+        else:
+            if self.train_file:
+                self.X_train, self.y_train = self._load_and_preprocess_file(self.train_file)
+            if self.val_file:
+                self.X_val, self.y_val = self._load_and_preprocess_file(self.val_file)
+            if self.test_file:
+                self.X_test, self.y_test = self._load_and_preprocess_file(self.test_file)
+
+    def _load_and_preprocess_file(self, file_path):
+        """Load and preprocess a specific file."""
+        data = pd.read_csv(file_path)
+        data['CleanedText'] = data['reviewText'].apply(preprocess_text_v2)
+        data = data.dropna(subset=['CleanedText'])
+        X = data['CleanedText']
+        y = data['overall']
+        print(f"Data from {file_path} preprocessed successfully!")
+        return X, y
 
     def split_data(self, test_size=0.25, validation_size=0.25, random_state=42, stratify_column='overall'):
         """Split data into training, validation, and test sets."""
+        if not self.file_path:
+            raise ValueError("File path must be provided for splitting data.")
+        
         X = self.data['CleanedText']
         y = self.data[stratify_column]
 
@@ -47,6 +71,18 @@ class DataPreprocessor:
 
         print("Data split completed.")
 
+    def get_train_data(self):
+        """Get training data."""
+        return self.X_train, self.y_train
+
+    def get_val_data(self):
+        """Get validation data."""
+        return self.X_val, self.y_val
+
+    def get_test_data(self):
+        """Get test data."""
+        return self.X_test, self.y_test
+
     def get_train_val_test_data(self):
         """Get split data."""
         return self.X_train, self.X_val, self.X_test, self.y_train, self.y_val, self.y_test
@@ -55,27 +91,3 @@ class DataPreprocessor:
         """Resample training data."""
         self.X_train, self.y_train = oversampler(self.X_train, self.y_train)
         print("Resampling completed.")
-
-
-
-if __name__ == '__main__':
-
-    preprocessor = DataPreprocessor('balanced_train_data.csv')
-    preprocessor.load_and_preprocess()
-    preprocessor.split_data()
-    preprocessor.oversample()
-    X_train, X_val, X_test, y_train, y_val, y_test = preprocessor.get_train_val_test_data()
-
-    unbalanced_data = DataPreprocessor('unbalanced_test_data.csv')
-    unbalanced_data.load_and_preprocess()
-    unbalanced_data.split_data()
-    unbalanced_data.oversample()
-    X_train_unbalanced, X_val_unbalanced, X_test_unbalanced, y_train_unbalanced, y_val_unbalanced, y_test_unbalanced = unbalanced_data.get_train_val_test_data()
-
-    print("TRAIN unbalanced data: ", len(X_train))
-    print("VAL unbalanced data: ", len(X_val))
-    print("TEST unbalanced data: ", len(X_test))
-
-    print("TRAIN balanced data: ", len(X_train_unbalanced))
-    print("VAL balanced data: ", len(X_val_unbalanced))
-    print("TEST balanced data: ", len(X_test_unbalanced))

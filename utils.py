@@ -254,7 +254,7 @@ def plot_cm_distilbert(model, X_test, y_test): # TODO: test this, not working
     plt.show()
 
 
-file_path = 'dataset\\test_imbalanced.csv'  # Sostituisci con il percorso del tuo file CSV
+file_path = 'dataset\\test_unbalanced.csv'
 data = pd.read_csv(file_path)
 
 # Chiamare la funzione per creare il grafico a torta

@@ -3,6 +3,12 @@ import numpy as np
 from torch.utils.data import Dataset
 from transformers import BertTokenizer, BertForSequenceClassification, Trainer, TrainingArguments
 from sklearn.metrics import accuracy_score, f1_score, classification_report
+import logging
+import psutil
+import os
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class SentimentDataset(Dataset):
     def __init__(self, texts, labels, tokenizer, max_length):
@@ -17,6 +23,11 @@ class SentimentDataset(Dataset):
         item['labels'] = torch.tensor(self.labels[idx], dtype=torch.long)
         return item
 
+def memory_usage():
+    process = psutil.Process(os.getpid())
+    mem_info = process.memory_info()
+    return mem_info.rss / (1024 * 1024)  # in MB
+
 class BertModelBuilder:
     def __init__(self, num_labels, max_length=512):
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
@@ -24,10 +35,10 @@ class BertModelBuilder:
         self.max_length = max_length
         self.trainer = None
 
-    def train(self, X_train, y_train, X_val, y_val, epochs=3, batch_size=8):
+    def train(self, X_train, y_train, X_val, y_val, epochs=3, batch_size=4):
         train_dataset = SentimentDataset(X_train, y_train, self.tokenizer, self.max_length)
         val_dataset = SentimentDataset(X_val, y_val, self.tokenizer, self.max_length)
-        
+
         training_args = TrainingArguments(
             output_dir='./results',
             num_train_epochs=epochs,
@@ -37,6 +48,7 @@ class BertModelBuilder:
             weight_decay=0.01,
             logging_dir='./logs',
             logging_steps=10,
+            log_level='info',  # Set logging level
         )
 
         self.trainer = Trainer(
@@ -47,7 +59,11 @@ class BertModelBuilder:
             compute_metrics=lambda pred: {'accuracy': accuracy_score(y_val, np.argmax(pred.predictions, axis=1))}
         )
 
+        logger.info("Starting training")
+        logger.info(f"Memory usage before training: {memory_usage()} MB")
         self.trainer.train()
+        logger.info(f"Memory usage after training: {memory_usage()} MB")
+        logger.info("Training completed")
 
     def predict(self, X_test, y_test):
         test_dataset = SentimentDataset(X_test, y_test, self.tokenizer, self.max_length)
@@ -59,14 +75,13 @@ class BertModelBuilder:
         f1 = f1_score(y_test, y_pred, average='weighted')
         print(f'F1 score: {f1:.2f}')
         print(f'Accuracy: {accuracy:.2f}')
-        print(classification_report(y_test, y_pred)) 
+        print(classification_report(y_test, y_pred))
 
     def get_model(self):
         return self.model
 
 
 if __name__ == '__main__':
-
     from data import DataPreprocessor
 
     data = DataPreprocessor('amazon_reviews.csv')
@@ -79,7 +94,7 @@ if __name__ == '__main__':
     X_val = [str(text) for text in X_val]
     X_test = [str(text) for text in X_test]
 
-    # convert labels into list of integers
+    # convert labels into list of integers
     y_train = [int(label-1) for label in y_train]
     y_val = [int(label-1) for label in y_val]
     y_test = [int(label-1) for label in y_test]
@@ -112,9 +127,7 @@ if __name__ == '__main__':
     print(f"Test size: {len(X_test)}")
 
     model_builder = BertModelBuilder(num_labels=5)
+    logger.info("Starting model training")
     model_builder.train(X_train, y_train, X_val, y_val)
+    logger.info("Model training completed")
     model_builder.predict(X_test, y_test)
-
-
-
-
