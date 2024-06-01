@@ -179,7 +179,7 @@ def plot_dataset_data(data):
     plt.ylabel('Count')
     plt.show()
 
-def plot_pie_graph(data):
+def plot_pie_graph(data, title='Distribution of Ratings'):
     """
     Plot the distribution of the dataset.
 
@@ -191,7 +191,7 @@ def plot_pie_graph(data):
     """
     plt.figure(figsize=(10, 6))
     data['overall'].value_counts().sort_index().plot(kind='pie', autopct='%1.1f%%')
-    plt.title('Distribution of Ratings')
+    plt.title(title)
     plt.xlabel('Rating')
     plt.ylabel('Count')
     plt.show()
@@ -252,3 +252,10 @@ def plot_cm_distilbert(model, X_test, y_test): # TODO: test this, not working
     plt.xlabel('Predicted')
     plt.ylabel('Actual')
     plt.show()
+
+
+file_path = 'dataset\\test_imbalanced.csv'  # Sostituisci con il percorso del tuo file CSV
+data = pd.read_csv(file_path)
+
+# Chiamare la funzione per creare il grafico a torta
+plot_pie_graph(data,"Test set unbalanced")

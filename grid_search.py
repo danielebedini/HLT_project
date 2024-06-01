@@ -78,7 +78,6 @@ plot_confusion_matrix(optimizer.get_model(), X_val_unbalanced, y_val_unbalanced,
 
 # Logistic regression model (with count vectorizer)
 
-'''
 lr_model_builder = LogisticRegressionModelBuilder(max_iter=5000, solver='liblinear')  
 lr_model_builder.train(X_train_balanced, y_train_balanced)
 lr_model_builder.evaluate(X_test_balanced, y_test_balanced)
@@ -98,11 +97,10 @@ optimizer.fit(X_train_balanced, y_train_balanced)
 optimizer.evaluate(X_test_balanced, y_test_balanced)
 
 plot_confusion_matrix(lr_model_builder.get_model(), X_test_balanced, y_test_balanced,model_name="Logistic Regression")
-'''
+
 
 
 # Random forest model
-'''
 rf_model_builder = RandomForestModelBuilder()
 rf_model_builder.train(X_train_balanced, y_train_balanced)
 rf_model_builder.evaluate(X_test_balanced, y_test_balanced)
@@ -171,4 +169,3 @@ optimizer.fit(X_train_balanced, y_train_balanced)
 optimizer.evaluate(X_test_balanced, y_test_balanced)
 
 plot_confusion_matrix(nb_model.get_model(), X_test_balanced, y_test_balanced,model_name="Naive Bayes")
-'''
