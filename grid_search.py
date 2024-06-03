@@ -2,7 +2,6 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score, classification_report
 from data import DataPreprocessor
 from model_lsvc import LSVCModelBuilder
-from model_rfc import RandomForestModelBuilder
 from model_cvlr import LogisticRegressionModelBuilder
 from model_tflr import TfIdfLogisticRegressionModelBuilder
 from model_nb import NaiveBayesModelBuilder
