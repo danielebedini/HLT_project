@@ -8,6 +8,11 @@ import matplotlib.pyplot as plt
 
 from contractions import contractions_dict
 
+"""
+This file is a collection of utility functions that can be used in various parts of the project.
+The functions include preprocessing text data, plotting the distribution of the dataset, and plotting a confusion matrix.
+"""
+
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
