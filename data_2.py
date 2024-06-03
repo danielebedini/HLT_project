@@ -1,9 +1,4 @@
-"""
-- Use the whole balanced dataset for training.
-- Use the whole unbalanced dataset for validation and testing.
-"""
 import pandas as pd
-import matplotlib.pyplot as plt
 from utils import preprocess_text_v2
 from sklearn.model_selection import train_test_split
 
@@ -13,16 +8,9 @@ def preprocess(X):
     X = X.dropna()
     return X
 
-def plot_cake_graph(dataset, title):
-    """Plot cake graph of a given dataset."""
-    # Plot cake graph
-    dataset['overall'].value_counts().plot(kind='pie', autopct='%1.1f%%', startangle=90, title=title)
-    plt.axis('equal')
-    plt.show()
-
 # Load and preprocess balanced training data
 
-file = 'balanced_train_data.csv'
+file = 'dataset/training.csv'
 train_data = pd.read_csv(file)
 #print(data.head())
 
@@ -38,43 +26,50 @@ y_train = train_data['overall']
 #print(X_train.shape)
 #print(y_train.shape)
 
+#X_train, _, y_train, _ = train_test_split(X_train, y_train, test_size=0.8, random_state=42)
+
+X_train = [str(text) for text in X_train]
+y_train = [int(label-1) for label in y_train]
+
 print("Training data preprocessed successfully!")
+
+file = 'dataset/validation.csv'
+val_data = pd.read_csv(file)
+
+# Estrai la colonna 'reviewText' e 'overall'
+X_val = val_data['reviewText']
+y_val = val_data['overall']
+
+# Preprocessa i dati (assumendo che tu abbia una funzione preprocess)
+X_val = preprocess(X_val)
+
+X_val = [str(text) for text in X_val]
+y_val = [int(label-1) for label in y_val]
 
 # Load and preprocess unbalanced test data
 
-file = 'unbalanced_test_data.csv'
+file = 'dataset/test_imbalanced.csv'
 test_data = pd.read_csv(file)
 
 # Estrai la colonna 'reviewText' e 'overall'
-X = test_data['reviewText']
-y = test_data['overall']
+X_test = test_data['reviewText']
+y_test = test_data['overall']
 
 # Preprocessa i dati (assumendo che tu abbia una funzione preprocess)
-X = preprocess(X)
+X_test = preprocess(X_test)
 
-# Dividi i dati in test e validation set con proporzione 50-50
-X_test, X_val, y_test, y_val = train_test_split(X, y, test_size=0.5, random_state=42)
+X_test = [str(text) for text in X_test]
+y_test = [int(label-1) for label in y_test]
 
-X_train = X_train.values.tolist()
-X_val = X_val.values.tolist()
-X_test = X_test.values.tolist()
+file = 'dataset/test_balanced.csv'
+test_data = pd.read_csv(file)
 
-# Stampa i primi 3 elementi per verifica
-#print(X_test[:3])
-#print(y_test[:3])
-#print(X_val[:3])
-#print(y_val[:3])
+# Estrai la colonna 'reviewText' e 'overall'
+X_test_balanced = test_data['reviewText']
+y_test_balanced = test_data['overall']
 
-# Stampa le forme dei nuovi set di dati
-#print(X_test.shape)
-#print(y_test.shape)
-#print(X_val.shape)
-#print(y_val.shape)
+# Preprocessa i dati (assumendo che tu abbia una funzione preprocess)
+X_test_balanced = preprocess(X_test_balanced)
 
-print("Testing data preprocessed successfully!")
-
-if __name__ == '__main__':
-
-    # Plot cake graph
-    plot_cake_graph(train_data, "Balanced Training Data")   
-    plot_cake_graph(test_data, "Unbalanced Test Data")
+X_test_balanced = [str(text) for text in X_test_balanced]
+y_test_balanced = [int(label-1) for label in y_test_balanced]
