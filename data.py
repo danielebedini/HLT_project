@@ -3,6 +3,11 @@ from sklearn.model_selection import train_test_split
 from utils import preprocess_text_v2, oversampler
 from sklearn.model_selection import train_test_split
 
+"""
+Class that preprocesses the data from a given dataset.
+This class can also split the data into training, validation, and test sets.
+It can also do oversampling of the training data.
+"""
 
 class DataPreprocessor:
     def __init__(self, file_path=None, train_file=None, val_file=None, test_file=None):

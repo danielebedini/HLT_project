@@ -3,7 +3,6 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 import string
-import json
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -133,35 +132,6 @@ def preprocess_text_contractions(text):
         return ''
 
 
-# save the results to a json file
-def save_results_json(model, accuracy, class_report, filename):
-    """
-    Save results to a JSON file.
-
-    Args:
-        model: The trained model or its configuration.
-        accuracy (float): The accuracy score.
-        class_report (str): The classification report.
-        filename (str): Name of the JSON file to save.
-
-    Returns:
-        None
-    """
-
-    # Serialize model if it's not a string
-    model_info = str(model) if not isinstance(model, str) else model
-    
-    # Prepare data for JSON serialization
-    results = {
-        'model': model_info,
-        'accuracy': accuracy,
-        'classification_report': class_report
-    }
-    
-    # Save results to JSON file
-    with open(filename, 'w') as f:
-        json.dump(results, f, indent=4)
-
 def plot_dataset_data(data):
     """
     Plot the distribution of the dataset.
@@ -178,6 +148,7 @@ def plot_dataset_data(data):
     plt.xlabel('Rating')
     plt.ylabel('Count')
     plt.show()
+
 
 def plot_pie_graph(data, title='Distribution of Ratings'):
     """
@@ -196,6 +167,7 @@ def plot_pie_graph(data, title='Distribution of Ratings'):
     plt.ylabel('Count')
     plt.show()
 
+
 def plot_confusion_matrix(model, X_test, y_test, model_name):
     # plot confusion matrix
     from sklearn.metrics import confusion_matrix
@@ -211,6 +183,7 @@ def plot_confusion_matrix(model, X_test, y_test, model_name):
     plt.xlabel('Predicted')
     plt.ylabel('Actual')
     plt.show()
+
 
 def get_wordcloud(data, overall):
     from wordcloud import WordCloud
@@ -228,6 +201,7 @@ def get_wordcloud(data, overall):
     plt.axis('off')
     plt.show()
 
+
 def oversampler(X_train, y_train):
     from imblearn.over_sampling import RandomOverSampler
 
@@ -237,25 +211,3 @@ def oversampler(X_train, y_train):
 
     return X_train, y_train
 
-def plot_cm_distilbert(model, X_test, y_test): # TODO: test this, not working   
-    """Plots the confusion matrix for the distilBERT model."""
-    from sklearn.metrics import confusion_matrix
-    import seaborn as sns
-
-    y_pred = model.predict(X_test)
-    y_pred = [np.argmax(pred) for pred in y_pred]
-    cm = confusion_matrix(y_test, y_pred)
-    cm_df = pd.DataFrame(cm, index=[i for i in range(1, 6)], columns=[i for i in range(1, 6)])
-    plt.figure(figsize=(10, 6))
-    sns.heatmap(cm_df, annot=True, fmt='g')
-    plt.title('Confusion Matrix')
-    plt.xlabel('Predicted')
-    plt.ylabel('Actual')
-    plt.show()
-
-
-file_path = 'dataset\\test_unbalanced.csv'
-data = pd.read_csv(file_path)
-
-# Chiamare la funzione per creare il grafico a torta
-plot_pie_graph(data,"Test set unbalanced")

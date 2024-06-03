@@ -1,9 +1,13 @@
 pandas==1.3.5
 nltk==3.6.5
 scikit-learn==1.0.2
+scipy==1.7.3
 numpy==1.21.5
 matplotlib==3.4.3
 seaBorn==0.11.2
 torch==1.10.0
 transformers==4.12.2
 wordcloud==1.8.1
+imbalance-learn==0.8.1
+imblearn==0.12.2
+tokenizers==0.19.1

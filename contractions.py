@@ -1,3 +1,5 @@
+""" Dictionary of English contractions and their expanded forms. """
+
 contractions_dict = {
     "ain't": "am not",
     "aren't": "are not",

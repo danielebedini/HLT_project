@@ -1,5 +1,0 @@
-{
-    "model": "GridSearchCV(cv=5,\n             estimator=Pipeline(steps=[('tfidf',\n                                        TfidfVectorizer(max_df=0.8,\n                                                        max_features=10000,\n                                                        min_df=5,\n                                                        ngram_range=(1, 2))),\n                                       ('clf', LinearSVC())]),\n             param_grid={'clf__C': [0.1, 1.0, 10.0, 100.0],\n                         'clf__loss': ['hinge', 'squared_hinge']},\n             scoring='accuracy')",
-    "accuracy": 0.5093457943925234,
-    "classification_report": "              precision    recall  f1-score   support\n\n         1.0       0.52      0.88      0.65        49\n         2.0       0.33      0.06      0.11        16\n         3.0       0.42      0.17      0.24        29\n         4.0       0.49      0.35      0.41        60\n         5.0       0.53      0.65      0.59        60\n\n    accuracy                           0.51       214\n   macro avg       0.46      0.42      0.40       214\nweighted avg       0.49      0.51      0.47       214\n"
-}

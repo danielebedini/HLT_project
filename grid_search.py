@@ -3,10 +3,15 @@ from sklearn.metrics import accuracy_score, classification_report
 from data import DataPreprocessor
 from model_lsvc import LSVCModelBuilder
 from model_rfc import RandomForestModelBuilder
-from model_LLM import LogisticRegressionModelBuilder
-from model_new import TfIdfLogisticRegressionModelBuilder
+from model_cvlr import LogisticRegressionModelBuilder
+from model_tflr import TfIdfLogisticRegressionModelBuilder
 from model_nb import NaiveBayesModelBuilder
 from utils import save_results_json, plot_confusion_matrix
+
+""" 
+This class is used to optimize the hyperparameters of a given model using GridSearchCV, for model selection. 
+It evaluates the model before and after optimization for more accurate results.
+"""
 
 class ModelOptimizer:
     def __init__(self, model, param_grid):
@@ -38,6 +43,7 @@ class ModelOptimizer:
         # Return the best estimator found by GridSearchCV
         return self.grid_search.best_estimator_
 
+
 if __name__ == '__main__':
     # Load, preprocess, and oversample the data
     preprocessor = DataPreprocessor(train_file='dataset/training.csv', val_file='dataset/validation.csv', test_file='dataset/test_balanced.csv')
@@ -58,7 +64,7 @@ if __name__ == '__main__':
 
 
 
-    # Linear SVC model --------------------------------------------------------
+    # Linear SVC model
     print("\n\nLinear SVC model")
     model_builder = LSVCModelBuilder()
     model_builder.train(X_train_balanced, y_train_balanced)
@@ -79,7 +85,7 @@ if __name__ == '__main__':
 
 
 
-    # Logistic regression model (with count vectorizer) -----------------------
+    # Logistic regression model (with count vectorizer)
     print("\n\nLogistic regression model")
     lr_model_builder = LogisticRegressionModelBuilder(max_iter=5000, solver='liblinear')
     lr_model_builder.train(X_train_balanced, y_train_balanced)
@@ -102,7 +108,7 @@ if __name__ == '__main__':
 
 
 
-    # TfIdf Logistic Regression model -----------------------------------------
+    # TfIdf Logistic Regression model
     print("\n\nTfIdfLogisticRegressionModelBuilder")
     tfidf_lr_model_builder = TfIdfLogisticRegressionModelBuilder()
     tfidf_lr_model_builder.train(X_train_balanced, y_train_balanced)
