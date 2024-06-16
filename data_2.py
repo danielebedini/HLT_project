@@ -43,7 +43,7 @@ y_val = [int(label-1) for label in y_val]
 
 # Load and preprocess the unbalanced test set
 
-file = 'dataset/test_imbalanced.csv'
+file = 'dataset/test_unbalanced.csv'
 test_data = pd.read_csv(file)
 
 X_test = test_data['reviewText']

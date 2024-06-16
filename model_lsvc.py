@@ -31,7 +31,7 @@ class LSVCModelBuilder:
 
 if __name__ == "__main__":
     
-    from data import DataPreprocessor
+    """from data import DataPreprocessor
     from utils import plot_confusion_matrix
 
     # Train the model on balanced data
@@ -44,11 +44,15 @@ if __name__ == "__main__":
     # Test the model on unbalanced data
     preprocessor = DataPreprocessor(test_file='dataset/dataset_1/unbalanced_test_data.csv')
     preprocessor.load_and_preprocess()
-    X_test, y_test = preprocessor.get_test_data()
+    X_test, y_test = preprocessor.get_test_data()"""
+
+    from data_2 import X_train, y_train, X_test, y_test, X_test_balanced, y_test_balanced
 
     model_builder = LSVCModelBuilder()
     model_builder.train(X_train, y_train)
     model_builder.evaluate(X_test, y_test)
+    model_builder.evaluate(X_test_balanced, y_test_balanced)
 
-    plot_confusion_matrix(model_builder.get_model(), X_test, y_test, 'Count Vectorizer with Logistic Regression')
+    plot_confusion_matrix(model_builder.get_model(), X_test, y_test, 'SVC Model')
+    plot_confusion_matrix(model_builder.get_model(), X_test_balanced, y_test_balanced, 'SVC Model')
 
