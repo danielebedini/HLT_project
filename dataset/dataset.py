@@ -47,7 +47,7 @@ def split_and_save_dataset(df, output_dir, max_samples_per_category, test_size=0
             num_samples = min(len(df_rating), num_samples)
             imbalanced_test_dfs.append(df_rating.sample(num_samples, random_state=1))
         imbalanced_test_df = pd.concat(imbalanced_test_dfs, ignore_index=True)
-        imbalanced_test_df.to_csv(os.path.join(output_dir, 'test_imbalanced.csv'), index=False)
+        imbalanced_test_df.to_csv(os.path.join(output_dir, 'test_unbalanced.csv'), index=False)
     else:
         print("No class ratios provided for imbalanced test set.")
 
@@ -102,32 +102,32 @@ if __name__ == '__main__':
     X_train = pd.read_csv('dataset/training.csv')['reviewText']
     X_val = pd.read_csv('dataset/validation.csv')['reviewText']
     X_test_balanced = pd.read_csv('dataset/test_balanced.csv')['reviewText']
-    X_test_imbalanced = pd.read_csv('dataset/test_imbalanced.csv')['reviewText']
+    X_test_unbalanced = pd.read_csv('dataset/test_unbalanced.csv')['reviewText']
 
     y_train = pd.read_csv('dataset/training.csv')['overall']
     y_val = pd.read_csv('dataset/validation.csv')['overall']
     y_test_balanced = pd.read_csv('dataset/test_balanced.csv')['overall']
-    y_test_imbalanced = pd.read_csv('dataset/test_imbalanced.csv')['overall']
+    y_test_unbalanced = pd.read_csv('dataset/test_unbalanced.csv')['overall']
 
     # Preprocess data
     X_train = X_train.apply(preprocess_text_v2)
     X_val = X_val.apply(preprocess_text_v2)
     X_test_balanced = X_test_balanced.apply(preprocess_text_v2)
-    X_test_imbalanced = X_test_imbalanced.apply(preprocess_text_v2)
+    X_test_unbalanced = X_test_unbalanced.apply(preprocess_text_v2)
 
     # For finetuning BERT and DistilBERT, we need to convert the labels to integers starting from 0
     X_train = [str(text) for text in X_train]
     X_val = [str(text) for text in X_val]
     X_test_balanced = [str(text) for text in X_test_balanced]
-    X_test_imbalanced = [str(text) for text in X_test_imbalanced]
+    X_test_unbalanced = [str(text) for text in X_test_unbalanced]
 
     y_train = [int(label-1) for label in y_train]
     y_val = [int(label-1) for label in y_val]
     y_test_balanced = [int(label-1) for label in y_test_balanced]
-    y_test_imbalanced = [int(label-1) for label in y_test_imbalanced]
+    y_test_unbalanced = [int(label-1) for label in y_test_unbalanced]
 
     print(f"Train size: {len(X_train)}")
     print(f"Validation size: {len(X_val)}")
     print(f"Test balanced size: {len(X_test_balanced)}")
-    print(f"Test imbalanced size: {len(X_test_imbalanced)}")
+    print(f"Test imbalanced size: {len(X_test_unbalanced)}")
 

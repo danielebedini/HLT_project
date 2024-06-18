@@ -53,6 +53,6 @@ if __name__ == "__main__":
     model_builder.evaluate(X_test, y_test)
     model_builder.evaluate(X_test_balanced, y_test_balanced)
 
-    plot_confusion_matrix(model_builder.get_model(), X_test, y_test, 'SVC Model')
-    plot_confusion_matrix(model_builder.get_model(), X_test_balanced, y_test_balanced, 'SVC Model')
+    plot_confusion_matrix(model_builder.get_model(), X_test, y_test, 'Linear SVC')
+    plot_confusion_matrix(model_builder.get_model(), X_test_balanced, y_test_balanced, 'Linear SVC')
 
