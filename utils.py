@@ -216,3 +216,35 @@ def oversampler(X_train, y_train):
 
     return X_train, y_train
 
+
+def confusion_matrix_three_classes(model, X_test, y_test, model_name='Model'):
+    from sklearn.metrics import confusion_matrix
+    import seaborn as sns
+
+    y_pred = model.predict(X_test)
+    
+    y_test = pd.Series(y_test).map(lambda x: 0 if x < 2 else 2 if x == 2 else 4)
+    y_pred = pd.Series(y_pred).map(lambda x: 0 if x < 2 else 2 if x == 2 else 4)
+
+    cm = confusion_matrix(y_test, y_pred)
+    cm_df = pd.DataFrame(cm, index=['Negative', 'Neutral', 'Positive'], columns=['Negative', 'Neutral', 'Positive'])
+    plt.figure(figsize=(10, 6))
+    sns.heatmap(cm_df, annot=True, fmt='g')
+    plt.title('Confusion Matrix of the Model ' + model_name)
+    plt.xlabel('Predicted')
+    plt.ylabel('Actual')
+    plt.show()
+
+
+def metrics_with_three_classes(model, X_test, y_test, model_name='Model'):
+    from sklearn.metrics import classification_report
+
+    # Recalculate metrics from the confusion matrix
+    # 1 and 2 are negative, 3 is neutral, 4 and 5 are positive
+    y_pred = model.predict(X_test)
+    
+    y_test = pd.Series(y_test).map(lambda x: 0 if x < 2 else 2 if x == 2 else 4)
+    y_pred = pd.Series(y_pred).map(lambda x: 0 if x < 2 else 2 if x == 2 else 4)
+
+    print(classification_report(y_test, y_pred, target_names=['Negative', 'Neutral', 'Positive']))
+    confusion_matrix_three_classes(model, X_test, y_test, model_name='Model')

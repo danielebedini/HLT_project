@@ -5,7 +5,7 @@ from model_lsvc import LSVCModelBuilder
 from model_cvlr import LogisticRegressionModelBuilder
 from model_tflr import TfIdfLogisticRegressionModelBuilder
 from model_nb import NaiveBayesModelBuilder
-from utils import save_results_json, plot_confusion_matrix
+from utils import plot_confusion_matrix, metrics_with_three_classes
 
 """ 
 This class is used to optimize the hyperparameters of a given model using GridSearchCV, for model selection. 
@@ -44,7 +44,7 @@ class ModelOptimizer:
 
 
 if __name__ == '__main__':
-    # Load, preprocess, and oversample the data
+    """    # Load, preprocess, and oversample the data
     preprocessor = DataPreprocessor(train_file='dataset/training.csv', val_file='dataset/validation.csv', test_file='dataset/test_balanced.csv')
     preprocessor.load_and_preprocess()
     preprocessor.oversample()
@@ -60,14 +60,13 @@ if __name__ == '__main__':
     print("TS balanced: ", len(X_test_balanced))
     print("TS unbalanced: ", len(X_test_unbalanced))
 
+    """
 
-
-
-    # Linear SVC model
+    """# Linear SVC model
     print("\n\nLinear SVC model")
     model_builder = LSVCModelBuilder()
-    model_builder.train(X_train_balanced, y_train_balanced)
-    model_builder.evaluate(X_test_unbalanced, y_test_unbalanced)
+    model_builder.train(X_train, y_train)
+    model_builder.evaluate(X_test, y_test)
     # Further optimization for Linear SVC
     model = model_builder.get_model()
     param_grid = {
@@ -125,26 +124,25 @@ if __name__ == '__main__':
     optimizer.evaluate(X_test_unbalanced, y_test_unbalanced)
     # plot confusion matrix
     plot_confusion_matrix(optimizer.get_model(), X_test_unbalanced, y_test_unbalanced, model_name="TF-IDF Logistic Regression")
-    plot_confusion_matrix(optimizer.get_model(), X_test_balanced, y_test_balanced, model_name="TF-IDF Logistic Regression balanced")
+    plot_confusion_matrix(optimizer.get_model(), X_test_balanced, y_test_balanced, model_name="TF-IDF Logistic Regression balanced")"""
+
+    from data_2 import X_train, y_train, X_test, y_test, X_test_balanced, y_test_balanced
 
     # Naive Bayes model
     print("\n\nNaive Bayes model")
     nb_model_builder = NaiveBayesModelBuilder()
-    nb_model_builder.train(X_train_balanced, y_train_balanced)
-    nb_model_builder.evaluate(X_test_unbalanced, y_test_unbalanced)
+    nb_model_builder.train(X_train, y_train)
+
+    metrics_with_three_classes(nb_model_builder.get_model(), X_test, y_test)
     # Further optimization for Naive Bayes
     model = nb_model_builder.get_model()
     param_grid = {
         'clf__alpha': [0.01, 0.1, 1, 10],
-        'tfidf__max_features': [5000, 10000, 20000],
-        'tfidf__ngram_range': [(1, 1), (1, 2)],
+        #'tfidf__max_features': [5000, 10000, 20000],
+        #'tfidf__ngram_range': [(1, 1), (1, 2)],
         'tfidf__min_df': [1, 5, 10],
         'tfidf__max_df': [0.5, 0.75, 1.0],
-        'tfidf__stop_words': [None, 'english']
     }
     optimizer = ModelOptimizer(model, param_grid)
-    optimizer.fit(X_train_balanced, y_train_balanced)
-    optimizer.evaluate(X_test_unbalanced, y_test_unbalanced)
-    # plot confusion matrix
-    plot_confusion_matrix(optimizer.get_model(), X_test_unbalanced, y_test_unbalanced, model_name="Naive Bayes")
-    plot_confusion_matrix(optimizer.get_model(), X_test_balanced, y_test_balanced, model_name="Naive Bayes balanced")
+    optimizer.fit(X_train, y_train)
+    metrics_with_three_classes(optimizer.get_model(), X_test, y_test)

@@ -3,7 +3,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.pipeline import Pipeline
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, classification_report, f1_score
-from utils import plot_confusion_matrix
+from utils import metrics_with_three_classes
 from data import DataPreprocessor
 # Naive bayes model
 
@@ -29,30 +29,13 @@ class NaiveBayesModelBuilder:
         return self.model
     
 
-if __name__ == "__main__":
-    
-    '''from data import DataPreprocessor
-    from utils import plot_confusion_matrix
+if __name__ == '__main__':
+    from model_nb import NaiveBayesModelBuilder
+    from data_2 import X_train, X_test, y_train, y_test, X_test_balanced, y_test_balanced
 
-    # Train the model on balanced data
-    preprocessor = DataPreprocessor(file_path='dataset/dataset_1/new_balanced_data.csv')
-    preprocessor.load_and_preprocess()
-    preprocessor.split_data()
-    preprocessor.oversample()
-    X_train, _, _, y_train, _, _ = preprocessor.get_train_val_test_data()
 
-    # Test the model on unbalanced data
-    preprocessor = DataPreprocessor(test_file='dataset/dataset_1/unbalanced_test_data.csv')
-    preprocessor.load_and_preprocess()
-    X_test, y_test = preprocessor.get_test_data()'''
-
-    from data_2 import X_train, y_train, X_test, y_test, X_test_balanced, y_test_balanced
-
-    model_builder = NaiveBayesModelBuilder()
-    model_builder.train(X_train, y_train)
-    model_builder.evaluate(X_test, y_test)
-    model_builder.evaluate(X_test_balanced, y_test_balanced)
-
-    plot_confusion_matrix(model_builder.get_model(), X_test, y_test, 'Naive Bayes')
-    plot_confusion_matrix(model_builder.get_model(), X_test_balanced, y_test_balanced, 'Naive Bayes')
+    model_nb = NaiveBayesModelBuilder()
+    model_nb.train(X_train, y_train)
+    metrics_with_three_classes(model_nb.model, X_test, y_test, 'Naiive Bayes Unbalanced Data')
+    metrics_with_three_classes(model_nb.model, X_test_balanced, y_test_balanced, 'Naiive Bayes Balanced Data')
 

@@ -4,7 +4,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, classification_report, f1_score
 from scipy.sparse import issparse
-from utils import plot_confusion_matrix
+from utils import plot_confusion_matrix, metrics_with_three_classes
 
 # As suggested, we use TfidfVectorizer instead of CountVectorizer with logistic regression
 
@@ -60,8 +60,6 @@ if __name__ == "__main__":
 
     model_builder = TfIdfLogisticRegressionModelBuilder()
     model_builder.train(X_train, y_train)
-    model_builder.evaluate(X_test, y_test)
-    model_builder.evaluate(X_test_balanced, y_test_balanced)
 
-    plot_confusion_matrix(model_builder.get_model(), X_test, y_test, 'TF-IDF with Logistic Regression')
-    plot_confusion_matrix(model_builder.get_model(), X_test_balanced, y_test_balanced, 'TF-IDF with Logistic Regression')
+    metrics_with_three_classes(model_builder.model, X_test, y_test)
+    metrics_with_three_classes(model_builder.model, X_test_balanced, y_test_balanced)
