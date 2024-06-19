@@ -1,19 +1,18 @@
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.svm import LinearSVC
+from sklearn.linear_model import SGDClassifier
+
 from sklearn.metrics import accuracy_score, classification_report, f1_score
 
-from utils import plot_confusion_matrix
+from utils import metrics_with_three_classes
 
 class LSVCModelBuilder:
-    def __init__(self, max_features=10000, ngram_range=(1, 2), min_df=5, max_df=0.8):
-        tfidf = TfidfVectorizer(max_features=max_features, ngram_range=ngram_range, min_df=min_df, max_df=max_df)
+    def __init__(self):
         self.model = Pipeline([
-            ('tfidf', tfidf),
-            ('scaler', StandardScaler(with_mean=False)),
-            ('clf', LinearSVC(max_iter = 2000))
-        ])
+            ('tfidf', TfidfVectorizer(ngram_range=(1, 2))),
+            ('clf', SGDClassifier()),
+            ])
 
     def train(self, X_train, y_train):
         self.model.fit(X_train, y_train)
@@ -46,13 +45,11 @@ if __name__ == "__main__":
     preprocessor.load_and_preprocess()
     X_test, y_test = preprocessor.get_test_data()"""
 
-    from data_2 import X_train, y_train, X_test, y_test, X_test_balanced, y_test_balanced
+    from data_2 import X_train, X_test, y_train, y_test, X_test_balanced, y_test_balanced
 
-    model_builder = LSVCModelBuilder()
-    model_builder.train(X_train, y_train)
-    model_builder.evaluate(X_test, y_test)
-    model_builder.evaluate(X_test_balanced, y_test_balanced)
-
-    plot_confusion_matrix(model_builder.get_model(), X_test, y_test, 'Linear SVC')
-    plot_confusion_matrix(model_builder.get_model(), X_test_balanced, y_test_balanced, 'Linear SVC')
+    # Linear SVC model
+    model_lsvc = LSVCModelBuilder()
+    model_lsvc.train(X_train, y_train)
+    metrics_with_three_classes(model_lsvc.model, X_test, y_test, 'Linear SVC Unbalanced Data')
+    metrics_with_three_classes(model_lsvc.model, X_test_balanced, y_test_balanced, 'Linear SVC Balanced Data')
 

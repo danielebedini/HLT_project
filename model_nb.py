@@ -8,10 +8,10 @@ from data import DataPreprocessor
 # Naive bayes model
 
 class NaiveBayesModelBuilder:
-    def __init__(self, alpha=1.0):
+    def __init__(self):
         self.model = Pipeline([
-            ('tfidf', TfidfVectorizer()),
-            ('clf', MultinomialNB(alpha=alpha))
+            ('tfidf', TfidfVectorizer(ngram_range=(1, 2))),
+            ('clf', MultinomialNB())
         ])
 
     def train(self, X_train, y_train):
@@ -30,12 +30,12 @@ class NaiveBayesModelBuilder:
     
 
 if __name__ == '__main__':
-    from model_nb import NaiveBayesModelBuilder
+
     from data_2 import X_train, X_test, y_train, y_test, X_test_balanced, y_test_balanced
 
 
     model_nb = NaiveBayesModelBuilder()
     model_nb.train(X_train, y_train)
-    metrics_with_three_classes(model_nb.model, X_test, y_test, 'Naiive Bayes Unbalanced Data')
-    metrics_with_three_classes(model_nb.model, X_test_balanced, y_test_balanced, 'Naiive Bayes Balanced Data')
+    metrics_with_three_classes(model_nb.model, X_test, y_test, 'Naive Bayes Unbalanced Data')
+    metrics_with_three_classes(model_nb.model, X_test_balanced, y_test_balanced, 'Naive Bayes Balanced Data')
 

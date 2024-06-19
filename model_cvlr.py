@@ -6,15 +6,15 @@ from sklearn.metrics import accuracy_score, classification_report, f1_score
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import FunctionTransformer
 from scipy.sparse import issparse
+from utils import plot_confusion_matrix, metrics_with_three_classes
 
 """ This pipeline uses CountVectorizer with Logistic Regression. """
 
 class LogisticRegressionModelBuilder:
-    def __init__(self, max_iter=20000, solver='liblinear'):
+    def __init__(self):
         self.model = Pipeline([
             ('vectorizer', CountVectorizer()),
-            ('scaler', StandardScaler(with_mean=False)),
-            ('classifier', LogisticRegression(max_iter=max_iter, solver=solver, verbose=0))
+            ('classifier', LogisticRegression(max_iter=500))
         ])
 
     def train(self, X_train, y_train):
@@ -38,7 +38,6 @@ class LogisticRegressionModelBuilder:
 
 if __name__ == "__main__":
     
-    from utils import plot_confusion_matrix
     """from data import DataPreprocessor
 
     # Train the model on balanced data
@@ -53,12 +52,10 @@ if __name__ == "__main__":
     preprocessor.load_and_preprocess()
     X_test, y_test = preprocessor.get_test_data()"""
 
-    from data_2 import X_train, y_train, X_test, y_test, X_test_balanced, y_test_balanced
+    from data_2 import X_train, X_test, y_train, y_test, X_test_balanced, y_test_balanced
 
-    model_builder = LogisticRegressionModelBuilder()
-    model_builder.train(X_train, y_train)
-    model_builder.evaluate(X_test, y_test)
-    model_builder.evaluate(X_test_balanced, y_test_balanced)
-
-    plot_confusion_matrix(model_builder.get_model(), X_test, y_test, 'Count Vectorizer with Logistic Regression')
-    plot_confusion_matrix(model_builder.get_model(), X_test_balanced, y_test_balanced, 'Count Vectorizer with Logistic Regression')
+    # Logistic regression model (with count vectorizer)
+    model_cvlr = LogisticRegressionModelBuilder()
+    model_cvlr.train(X_train, y_train)
+    metrics_with_three_classes(model_cvlr.model, X_test, y_test, 'CVLR Unbalanced Data')
+    metrics_with_three_classes(model_cvlr.model, X_test_balanced, y_test_balanced, 'CVLR Balanced Data')
