@@ -28,31 +28,34 @@ def real_test_creation(data):
         if overall[i] == 1:
             test_real_scenario = test_real_scenario._append({'reviewText': reviews[i], 'overall': 1}, ignore_index=True)
             count += 1
-            if count == 90:
+            if count == 30:
                 break
+
     # insert 2 star reviews
     count = 0
     for i in range(len(reviews)):
         if overall[i] == 2:
             test_real_scenario = test_real_scenario._append({'reviewText': reviews[i], 'overall': 2}, ignore_index=True)
             count += 1
-            if count == 20:
+            if count == 15:
                 break
+
     # insert 3 star reviews
     count = 0
     for i in range(len(reviews)):
         if overall[i] == 3:
             test_real_scenario = test_real_scenario._append({'reviewText': reviews[i], 'overall': 3}, ignore_index=True)
             count += 1
-            if count == 30:
+            if count == 15:
                 break
+
     # insert 4 star reviews
     count = 0
     for i in range(len(reviews)):
         if overall[i] == 4:
             test_real_scenario = test_real_scenario._append({'reviewText': reviews[i], 'overall': 4}, ignore_index=True)
             count += 1
-            if count == 90:
+            if count == 45:
                 break
     # insert 5 star reviews
     count = 0
@@ -60,7 +63,7 @@ def real_test_creation(data):
         if overall[i] == 5:
             test_real_scenario = test_real_scenario._append({'reviewText': reviews[i], 'overall': 5}, ignore_index=True)
             count += 1
-            if count == 400:
+            if count == 450:
                 break
     # save the new test set
     test_real_scenario.to_csv('dataset/test_real_scenario.csv', index=False)

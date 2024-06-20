@@ -248,3 +248,22 @@ def metrics_with_three_classes(model, X_test, y_test, model_name='Model'):
 
     print(classification_report(y_test, y_pred, target_names=['Negative', 'Neutral', 'Positive']))
     confusion_matrix_three_classes(model, X_test, y_test, model_name='Model')
+
+
+def calculate_distribution(data, name="Dataset"):
+    # given a dataset, calculate the distribution of the overall values, in percentage
+    df = pd.read_csv(data)
+    distribution = df['overall'].value_counts(normalize=True) * 100
+    print(f"Dataset: {name}")
+    print(distribution)
+
+
+if __name__ == '__main__':
+    
+    #calculate_distribution('dataset/dataset_1/balanced_train_data.csv', 'Amazon reviews dataset')
+    #calculate_distribution('dataset/dataset_1/new_balanced_data.csv', 'Amazon reviews dataset')
+    calculate_distribution('dataset/dataset_1/amazon_reviews.csv', 'Amazon reviews dataset')
+    # calculate_distribution('dataset/training.csv', 'Training dataset')
+    # calculate_distribution('dataset/validation.csv', 'Validation dataset')
+    # calculate_distribution('dataset/test_balanced', 'Test dataset')
+    calculate_distribution('dataset/test_real_scenario.csv', 'Real Test dataset')
