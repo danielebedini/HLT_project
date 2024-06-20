@@ -35,29 +35,33 @@ class TfIdfLogisticRegressionModelBuilder:
         return self.model
 
 
-if __name__ == "__main__":
-    
-    """
-    from data import DataPreprocessor
+if __name__ == '__main__':
+
+    from data_2 import X_train, X_test, y_train, y_test, X_test_balanced, y_test_balanced, X_test_real, y_test_real
     from utils import plot_confusion_matrix
 
-    # Train the model on balanced data
-    preprocessor = DataPreprocessor(file_path='dataset/dataset_1/new_balanced_data.csv')
-    preprocessor.load_and_preprocess()
-    preprocessor.split_data()
-    preprocessor.oversample()
-    X_train, _, _, y_train, _, _ = preprocessor.get_train_val_test_data()
+    model_tflr = TfIdfLogisticRegressionModelBuilder()
+    model_tflr.train(X_train, y_train)
 
-    # Test the model on unbalanced data
-    preprocessor = DataPreprocessor(test_file='dataset/dataset_1/unbalanced_test_data.csv')
-    preprocessor.load_and_preprocess()
-    X_test, y_test = preprocessor.get_test_data()
-    """
+    
+    print("Test (difficult version) on balanced data")
+    model_tflr.evaluate(X_test_balanced, y_test_balanced)
+    plot_confusion_matrix(model_tflr.model, X_test_balanced, y_test_balanced, 'TfIdf Logistic Regression Balanced Data')
 
-    from data_2 import X_train, y_train, X_test, y_test, X_test_balanced, y_test_balanced
+    print("Test (difficult version) on unbalanced data")
+    model_tflr.evaluate(X_test, y_test)
+    plot_confusion_matrix(model_tflr.model, X_test, y_test, 'TfIdf Logistic Regression Unbalanced Data')
 
-    model_builder = TfIdfLogisticRegressionModelBuilder()
-    model_builder.train(X_train, y_train)
+    print("Test (difficult version) on unbalanced data")
+    model_tflr.evaluate(X_test_real, y_test_real)
+    plot_confusion_matrix(model_tflr.model, X_test_real, y_test_real, 'TfIdf Logistic Regression Real Test')
+    
 
-    metrics_with_three_classes(model_builder.model, X_test, y_test, 'Logistic Regression Unbalanced Data')
-    metrics_with_three_classes(model_builder.model, X_test_balanced, y_test_balanced, 'Logistic Regression Balanced Data')
+    """print("Test on balanced data")
+    metrics_with_three_classes(model_tflr.model, X_test_balanced, y_test_balanced, 'Naive Bayes Balanced Data')
+
+    print("Test on unbalanced data")
+    metrics_with_three_classes(model_tflr.model, X_test, y_test, 'Naive Bayes Unbalanced Data')
+
+    print("Test on real data")
+    metrics_with_three_classes(model_tflr.model, X_test_real, y_test_real, 'Naive Bayes Real Test')"""

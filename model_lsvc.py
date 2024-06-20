@@ -28,28 +28,33 @@ class LSVCModelBuilder:
     def get_model(self):
         return self.model
 
-if __name__ == "__main__":
-    
-    """from data import DataPreprocessor
+if __name__ == '__main__':
+
+    from data_2 import X_train, X_test, y_train, y_test, X_test_balanced, y_test_balanced, X_test_real, y_test_real
     from utils import plot_confusion_matrix
 
-    # Train the model on balanced data
-    preprocessor = DataPreprocessor(file_path='dataset/dataset_1/new_balanced_data.csv')
-    preprocessor.load_and_preprocess()
-    preprocessor.split_data()
-    preprocessor.oversample()
-    X_train, _, _, y_train, _, _ = preprocessor.get_train_val_test_data()
-
-    # Test the model on unbalanced data
-    preprocessor = DataPreprocessor(test_file='dataset/dataset_1/unbalanced_test_data.csv')
-    preprocessor.load_and_preprocess()
-    X_test, y_test = preprocessor.get_test_data()"""
-
-    from data_2 import X_train, X_test, y_train, y_test, X_test_balanced, y_test_balanced
-
-    # Linear SVC model
     model_lsvc = LSVCModelBuilder()
     model_lsvc.train(X_train, y_train)
-    metrics_with_three_classes(model_lsvc.model, X_test, y_test, 'Linear SVC Unbalanced Data')
-    metrics_with_three_classes(model_lsvc.model, X_test_balanced, y_test_balanced, 'Linear SVC Balanced Data')
 
+    
+    print("Test (difficult version) on balanced data")
+    model_lsvc.evaluate(X_test_balanced, y_test_balanced)
+    plot_confusion_matrix(model_lsvc.model, X_test_balanced, y_test_balanced, 'LSVC Balanced Data')
+
+    print("Test (difficult version) on unbalanced data")
+    model_lsvc.evaluate(X_test, y_test)
+    plot_confusion_matrix(model_lsvc.model, X_test, y_test, 'LSVC Unbalanced Data')
+
+    print("Test (difficult version) on unbalanced data")
+    model_lsvc.evaluate(X_test_real, y_test_real)
+    plot_confusion_matrix(model_lsvc.model, X_test_real, y_test_real, 'LSVC Real Test')
+    
+
+    """print("Test on balanced data")
+    metrics_with_three_classes(model_lsvc.model, X_test_balanced, y_test_balanced, 'Naive Bayes Balanced Data')
+
+    print("Test on unbalanced data")
+    metrics_with_three_classes(model_lsvc.model, X_test, y_test, 'Naive Bayes Unbalanced Data')
+
+    print("Test on real data")
+    metrics_with_three_classes(model_lsvc.model, X_test_real, y_test_real, 'Naive Bayes Real Test')"""

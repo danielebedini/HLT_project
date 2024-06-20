@@ -67,3 +67,16 @@ X_test_balanced = preprocess(X_test_balanced)
 
 X_test_balanced = [str(text) for text in X_test_balanced]
 y_test_balanced = [int(label-1) for label in y_test_balanced]
+
+# load and preprpcess the real test set
+
+file = 'dataset/test_real_scenario.csv'
+test_data = pd.read_csv(file)
+
+X_test_real = test_data['reviewText']
+y_test_real = test_data['overall']
+
+X_test_real = preprocess(X_test_real)
+
+X_test_real = [str(text) for text in X_test_real]
+y_test_real = [int(label-1) for label in y_test_real]
