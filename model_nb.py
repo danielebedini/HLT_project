@@ -54,8 +54,8 @@ if __name__ == '__main__':
     print("Test on balanced data")
     metrics_with_three_classes(model_nb.model, X_test_balanced, y_test_balanced, 'Naive Bayes Balanced Data')
 
-    print("Test on unbalanced data")
-    metrics_with_three_classes(model_nb.model, X_test, y_test, 'Naive Bayes Unbalanced Data')
+    #print("Test on unbalanced data")
+    #metrics_with_three_classes(model_nb.model, X_test, y_test, 'Naive Bayes Unbalanced Data')
 
     print("Test on real data")
     metrics_with_three_classes(model_nb.model, X_test_real, y_test_real, 'Naive Bayes Real Test')

@@ -22,6 +22,7 @@ def real_test_creation(data):
     reviews = test_unbalanced['reviewText']
     # get the overall
     overall = test_unbalanced['overall']
+    
     # insert 1 star reviews
     count = 0
     for i in range(len(reviews)):
@@ -46,7 +47,7 @@ def real_test_creation(data):
         if overall[i] == 3:
             test_real_scenario = test_real_scenario._append({'reviewText': reviews[i], 'overall': 3}, ignore_index=True)
             count += 1
-            if count == 15:
+            if count == 20:
                 break
 
     # insert 4 star reviews
@@ -55,7 +56,7 @@ def real_test_creation(data):
         if overall[i] == 4:
             test_real_scenario = test_real_scenario._append({'reviewText': reviews[i], 'overall': 4}, ignore_index=True)
             count += 1
-            if count == 45:
+            if count == 50:
                 break
     # insert 5 star reviews
     count = 0
@@ -63,7 +64,7 @@ def real_test_creation(data):
         if overall[i] == 5:
             test_real_scenario = test_real_scenario._append({'reviewText': reviews[i], 'overall': 5}, ignore_index=True)
             count += 1
-            if count == 450:
+            if count == 500:
                 break
     # save the new test set
     test_real_scenario.to_csv('dataset/test_real_scenario.csv', index=False)

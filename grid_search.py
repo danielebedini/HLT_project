@@ -36,50 +36,13 @@ if __name__ == '__main__':
     from model_tflr import TfIdfLogisticRegressionModelBuilder
     from model_nb import NaiveBayesModelBuilder
 
-    from data_2 import X_train, X_test, y_train, y_test # these data are already preprocessed and ready to be used
+    from data_2 import X_train, X_test_real, y_train, y_test_real, X_test_balanced, y_test_balanced # these data are already preprocessed and ready to be used
 
     # We are going to optimize the hyperparameters of all the models
     # uncomment the model you want to optimize
 
     # The methodology is the same for all the models, we are going to use GridSearchCV to find the best hyperparameters, then 
     # we will see the classification report and the confusion matrix of the model before and after optimization
-
-    # Linear SVC model
-    # model = LSVCModelBuilder().get_model()
-    # param_grid = {
-    #     'clf__loss': ['hinge', 'log', 'modified_huber', 'squared_hinge', 'perceptron'],
-    #     'clf__penalty': ['l1', 'l2', 'elasticnet'],
-    #     'clf__alpha': [0.0001, 0.001, 0.01],
-    #     'clf__max_iter': [1000, 2000, 3000]
-    # }
-    
-    # optimizer = ModelOptimizer(model, param_grid)
-    # optimizer.fit(X_train, y_train)
-    # optimizer.evaluate(X_test, y_test, 'Linear SVC Unbalanced Data')
-
-    # CountVectorizer with Logistic Regression model
-    # model = LogisticRegressionModelBuilder().get_model()
-    # param_grid = {
-    #     'classifier__penalty': ['l1', 'l2', 'elasticnet'],
-    #     'classifier__C': [0.001, 0.01, 0.1, 1, 10],
-    #     'classifier__solver': ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga']
-    # }
-
-    # optimizer = ModelOptimizer(model, param_grid)
-    # optimizer.fit(X_train, y_train)
-    # optimizer.evaluate(X_test, y_test, 'CountVectorizer with Logistic Regression Unbalanced Data')
-
-    # TfIdfVectorizer with Logistic Regression model
-    #model = TfIdfLogisticRegressionModelBuilder().get_model()
-    #param_grid = {
-    #    'classifier__penalty': ['l1', 'l2', 'elasticnet'],
-    #    'classifier__C': [0.001, 0.01, 0.1, 1, 10],
-    #    'classifier__solver': ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga']
-    #}
-
-    #optimizer = ModelOptimizer(model, param_grid)
-    #optimizer.fit(X_train, y_train)
-    #optimizer.evaluate(X_test, y_test, 'TfIdfVectorizer with Logistic Regression Unbalanced Data')
     
     # Naive Bayes model
     model = NaiveBayesModelBuilder().get_model()
@@ -95,8 +58,78 @@ if __name__ == '__main__':
 
     nb = NaiveBayesModelBuilder()
     nb.train(X_train, y_train)
-    metrics_with_three_classes(nb.model, X_test, y_test, 'Naive Bayes Unbalanced Data')
+    metrics_with_three_classes(nb.model, X_test_real, y_test_real, 'Naive Bayes Unbalanced Data')
 
     optimizer = ModelOptimizer(model, param_grid)
     optimizer.fit(X_train, y_train)
-    optimizer.evaluate(X_test, y_test, 'Naive Bayes Unbalanced Data Optimized')
+    optimizer.evaluate(X_test_real, y_test_real, 'Naive Bayes Unbalanced Data Optimized')
+
+
+    # Logistic Regression model
+    model = LogisticRegressionModelBuilder().get_model()
+
+    param_grid = {
+        'classifier__C': [0.1, 0.5, 1.0, 1.5, 2.0],
+        'classifier__penalty': ['l1', 'l2'],
+        'classifier__max_iter': [100, 200, 500],
+        'vectorizer__ngram_range': [(1, 1), (1, 2), (1, 3)],
+        'vectorizer__use_idf': [True, False],
+        'vectorizer__smooth_idf': [True, False],
+        'vectorizer__sublinear_tf': [True, False],
+        'vectorizer__norm': ['l1', 'l2', None]
+    }
+
+    cvlr = LogisticRegressionModelBuilder()
+    cvlr.train(X_train, y_train)
+    metrics_with_three_classes(cvlr.model, X_test_real, y_test_real, 'Count Vectorizer Logistic Regression Unbalanced Data')
+
+    optimizer = ModelOptimizer(model, param_grid)
+    optimizer.fit(X_train, y_train)
+    optimizer.evaluate(X_test_real, y_test_real, 'Count Vectorizer Logistic Regression Unbalanced Data Optimized')
+
+    # Linear Support Vector Classification model
+    model = LSVCModelBuilder()
+
+    param_grid = {
+        'clf__alpha': [0.1, 0.5, 1.0, 1.5, 2.0],
+        'clf__loss': ['hinge', 'log', 'modified_huber', 'squared_hinge', 'perceptron'],
+        'tfidf__ngram_range': [(1, 1), (1, 2), (1, 3)],
+        'tfidf__use_idf': [True, False],
+        'tfidf__smooth_idf': [True, False],
+        'tfidf__sublinear_tf': [True, False],
+        'tfidf__norm': ['l1', 'l2', None]
+    }
+
+    lsvc = LSVCModelBuilder()
+    lsvc.train(X_train, y_train)
+    metrics_with_three_classes(lsvc.model, X_test_real, y_test_real, 'LSVC Unbalanced Data')
+
+    optimizer = ModelOptimizer(model, param_grid)
+    optimizer.fit(X_train, y_train)
+    optimizer.evaluate(X_test_real, y_test_real, 'LSVC Unbalanced Data Optimized')
+
+
+    # TfIdf Logistic Regression model
+    model = TfIdfLogisticRegressionModelBuilder()
+
+    param_grid = {
+        'classifier__C': [0.1, 0.5, 1.0, 1.5, 2.0],
+        'classifier__penalty': ['l1', 'l2'],
+        'classifier__max_iter': [100, 200, 500],
+        'vectorizer__ngram_range': [(1, 1), (1, 2), (1, 3)],
+        'vectorizer__use_idf': [True, False],
+        'vectorizer__smooth_idf': [True, False],
+        'vectorizer__sublinear_tf': [True, False],
+        'vectorizer__norm': ['l1', 'l2', None]
+    }
+
+    tflr = TfIdfLogisticRegressionModelBuilder()
+    tflr.train(X_train, y_train)
+    metrics_with_three_classes(tflr.model, X_test_real, y_test_real, 'TfIdf Logistic Regression Unbalanced Data')
+
+    optimizer = ModelOptimizer(model, param_grid)
+    optimizer.fit(X_train, y_train)
+
+    optimizer.evaluate(X_test_real, y_test_real, 'TfIdf Logistic Regression Unbalanced Data Optimized')
+
+    
