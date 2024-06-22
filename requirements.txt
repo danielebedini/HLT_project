@@ -11,3 +11,6 @@ wordcloud==1.8.1
 imbalance-learn==0.8.1
 imblearn==0.12.2
 tokenizers==0.19.1
+torch==1.10.0
+transformers==4.12.2
+datasets==1.14.0
