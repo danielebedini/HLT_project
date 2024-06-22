@@ -18,7 +18,6 @@ class LogisticRegressionModelBuilder:
         ])
 
     def train(self, X_train, y_train):
-        # Verifica se i dati sono sparsi e imposta with_mean di conseguenza
         X_transformed = self.model.named_steps['vectorizer'].fit_transform(X_train)
         if not issparse(X_transformed):
             self.model.named_steps['scaler'].set_params(with_mean=True)
