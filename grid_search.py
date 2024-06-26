@@ -44,6 +44,12 @@ if __name__ == '__main__':
     # The methodology is the same for all the models, we are going to use GridSearchCV to find the best hyperparameters, then 
     # we will see the classification report and the confusion matrix of the model before and after optimization
     
+    # print progress bar of the optimization with aliveprogress
+    from alive_progress import alive_bar
+    with alive_bar(100) as bar:
+        for i in range(100):
+            bar()
+
     # Naive Bayes model
     model = NaiveBayesModelBuilder().get_model()
     param_grid = {
@@ -132,4 +138,7 @@ if __name__ == '__main__':
 
     optimizer.evaluate(X_test_real, y_test_real, 'TfIdf Logistic Regression Unbalanced Data Optimized')
 
+
     
+    print("Optimization finished!")
+
