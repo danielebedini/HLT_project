@@ -51,14 +51,14 @@ if __name__ == '__main__':
     print("Test (difficult version) on unbalanced data")
     model_tflr.evaluate(X_test, y_test)
     plot_confusion_matrix(model_tflr.model, X_test, y_test, 'TfIdf Logistic Regression Unbalanced Data')
-
-    print("Test (difficult version) on unbalanced data")
+"""
+    """print("Test (difficult version) on unbalanced data")
     model_tflr.evaluate(X_test_real, y_test_real)
-    plot_confusion_matrix(model_tflr.model, X_test_real, y_test_real, 'TfIdf Logistic Regression Real Test')"""
-    
+    plot_confusion_matrix(model_tflr.model, X_test_real, y_test_real, 'TfIdf Logistic Regression Real Test')
+    """
 
-    print("Test on balanced data")
-    metrics_with_three_classes(model_tflr.model, X_test_balanced, y_test_balanced, 'Naive Bayes Balanced Data')
+    #print("Test on balanced data")
+    #metrics_with_three_classes(model_tflr.model, X_test_balanced, y_test_balanced, 'Naive Bayes Balanced Data')
 
     #print("Test on unbalanced data")
     #metrics_with_three_classes(model_tflr.model, X_test, y_test, 'Naive Bayes Unbalanced Data')

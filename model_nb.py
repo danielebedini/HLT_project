@@ -38,21 +38,21 @@ if __name__ == '__main__':
     model_nb.train(X_train, y_train)
 
     
-    """print("Test (difficult version) on balanced data")
-    model_nb.evaluate(X_test_balanced, y_test_balanced)
-    plot_confusion_matrix(model_nb.model, X_test_balanced, y_test_balanced, 'Naive Bayes Balanced Data')
+    #print("Test (difficult version) on balanced data")
+    #model_nb.evaluate(X_test_balanced, y_test_balanced)
+    #plot_confusion_matrix(model_nb.model, X_test_balanced, y_test_balanced, 'Naive Bayes Balanced Data')
 
-    print("Test (difficult version) on unbalanced data")
-    model_nb.evaluate(X_test, y_test)
-    plot_confusion_matrix(model_nb.model, X_test, y_test, 'Naive Bayes Unbalanced Data')
+    #print("Test (difficult version) on unbalanced data")
+    #model_nb.evaluate(X_test, y_test)
+    #plot_confusion_matrix(model_nb.model, X_test, y_test, 'Naive Bayes Unbalanced Data')
 
-    print("Test (difficult version) on unbalanced data")
+    """print("Test (difficult version) on unbalanced data")
     model_nb.evaluate(X_test_real, y_test_real)
     plot_confusion_matrix(model_nb.model, X_test_real, y_test_real, 'Naive Bayes Real Test')"""
     
 
-    print("Test on balanced data")
-    metrics_with_three_classes(model_nb.model, X_test_balanced, y_test_balanced, 'Naive Bayes Balanced Data')
+    #print("Test on balanced data")
+    #metrics_with_three_classes(model_nb.model, X_test_balanced, y_test_balanced, 'Naive Bayes Balanced Data')
 
     #print("Test on unbalanced data")
     #metrics_with_three_classes(model_nb.model, X_test, y_test, 'Naive Bayes Unbalanced Data')

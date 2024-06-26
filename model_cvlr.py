@@ -50,16 +50,16 @@ if __name__ == '__main__':
 
     print("Test (difficult version) on unbalanced data")
     model_cvlr.evaluate(X_test, y_test)
-    plot_confusion_matrix(model_cvlr.model, X_test, y_test, 'Logistic Regression Unbalanced Data')
+    plot_confusion_matrix(model_cvlr.model, X_test, y_test, 'Logistic Regression Unbalanced Data')"""
 
-    print("Test (difficult version) on real data")
+    """print("Test (difficult version) on real data")
     model_cvlr.evaluate(X_test_real, y_test_real)
     plot_confusion_matrix(model_cvlr.model, X_test_real, y_test_real, 'Logistic Regression Real Test')"""
     
 
-    print("Test on balanced data")
+    """print("Test on balanced data")
     metrics_with_three_classes(model_cvlr.model, X_test_balanced, y_test_balanced, 'Count Vectorizer Logistic Regression Balanced Data')
-
+    """
     #print("Test on unbalanced data")
     #metrics_with_three_classes(model_cvlr.model, X_test, y_test, 'Naive Bayes Unbalanced Data')
 
