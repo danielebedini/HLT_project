@@ -221,7 +221,7 @@ def confusion_matrix_three_classes(model, X_test, y_test, model_name='Model'):
     from sklearn.metrics import confusion_matrix
     import seaborn as sns
 
-    y_pred = model.predict(X_test, y_test)
+    y_pred = model.predict(X_test) # Add y_test as second argument if needed, but it is not necessary. Only for DistilBERT
     
     y_test = pd.Series(y_test).map(lambda x: 0 if x < 2 else 2 if x == 2 else 4)
     y_pred = pd.Series(y_pred).map(lambda x: 0 if x < 2 else 2 if x == 2 else 4)
@@ -241,7 +241,7 @@ def metrics_with_three_classes(model, X_test, y_test, model_name='Model'):
 
     # Recalculate metrics from the confusion matrix
     # 1 and 2 are negative, 3 is neutral, 4 and 5 are positive
-    y_pred = model.predict(X_test, y_test)
+    y_pred = model.predict(X_test)  # Add y_test as second argument if needed, but it is not necessary. Only for DistilBERT
     
     y_test = pd.Series(y_test).map(lambda x: 0 if x < 2 else 2 if x == 2 else 4)
     y_pred = pd.Series(y_pred).map(lambda x: 0 if x < 2 else 2 if x == 2 else 4)
