@@ -178,7 +178,7 @@ def plot_confusion_matrix(model, X_test, y_test, model_name):
     from sklearn.metrics import confusion_matrix
     import seaborn as sns
 
-    y_pred = model.predict(X_test, y_test)
+    y_pred = model.predict(X_test)
     cm = confusion_matrix(y_test, y_pred)
     #print("Confusion Matrix:", cm)
     cm_df = pd.DataFrame(cm, index=[i for i in range(1, 6)], columns=[i for i in range(1, 6)])
@@ -223,8 +223,11 @@ def confusion_matrix_three_classes(model, X_test, y_test, model_name='Model'):
 
     y_pred = model.predict(X_test) # Add y_test as second argument if needed, but it is not necessary. Only for DistilBERT
     
-    y_test = pd.Series(y_test).map(lambda x: 0 if x < 2 else 2 if x == 2 else 4)
-    y_pred = pd.Series(y_pred).map(lambda x: 0 if x < 2 else 2 if x == 2 else 4)
+    #y_test = pd.Series(y_test).map(lambda x: 0 if x < 2 else 2 if x == 2 else 4) # only use with DistilBERT
+    #y_pred = pd.Series(y_pred).map(lambda x: 0 if x < 2 else 2 if x == 2 else 4) # only use with DistilBERT
+
+    y_test = pd.Series(y_test).map(lambda x: 1 if x < 3 else 3 if x == 3 else 5) # use with all the other models
+    y_pred = pd.Series(y_pred).map(lambda x: 1 if x < 3 else 3 if x == 3 else 5) # use with all the other models
 
     cm = confusion_matrix(y_test, y_pred)
     cm_df = pd.DataFrame(cm, index=['Negative', 'Neutral', 'Positive'], columns=['Negative', 'Neutral', 'Positive'])
@@ -240,11 +243,14 @@ def metrics_with_three_classes(model, X_test, y_test, model_name='Model'):
     from sklearn.metrics import classification_report
 
     # Recalculate metrics from the confusion matrix
-    # 1 and 2 are negative, 3 is neutral, 4 and 5 are positive
+    # 1 and 2 are negative, 3 is neutral, 4 and 5 are positive. 
     y_pred = model.predict(X_test)  # Add y_test as second argument if needed, but it is not necessary. Only for DistilBERT
     
-    y_test = pd.Series(y_test).map(lambda x: 0 if x < 2 else 2 if x == 2 else 4)
-    y_pred = pd.Series(y_pred).map(lambda x: 0 if x < 2 else 2 if x == 2 else 4)
+    #y_test = pd.Series(y_test).map(lambda x: 0 if x < 2 else 2 if x == 2 else 4) # only use with DistilBERT
+    #y_pred = pd.Series(y_pred).map(lambda x: 0 if x < 2 else 2 if x == 2 else 4) # only use with DistilBERT
+
+    y_test = pd.Series(y_test).map(lambda x: 1 if x < 3 else 3 if x == 3 else 5) # use with all the other models
+    y_pred = pd.Series(y_pred).map(lambda x: 1 if x < 3 else 3 if x == 3 else 5) # use with all the other models
 
     print(classification_report(y_test, y_pred, target_names=['Negative', 'Neutral', 'Positive']))
     confusion_matrix_three_classes(model, X_test, y_test, model_name='Model')

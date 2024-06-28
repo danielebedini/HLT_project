@@ -24,7 +24,7 @@ X_train = preprocess(X)
 y_train = train_data['overall']
 
 X_train = [str(text) for text in X_train]
-y_train = [int(label-1) for label in y_train]
+# y_train = [int(label-1) for label in y_train] # only for DistilBERT
 
 print("Training data preprocessed successfully!")
 
@@ -39,7 +39,7 @@ y_val = val_data['overall']
 X_val = preprocess(X_val)
 
 X_val = [str(text) for text in X_val]
-y_val = [int(label-1) for label in y_val]
+# y_val = [int(label-1) for label in y_val] # only for DistilBERT
 
 # Load and preprocess the unbalanced test set
 
@@ -53,7 +53,7 @@ y_test = test_data['overall']
 X_test = preprocess(X_test)
 
 X_test = [str(text) for text in X_test]
-y_test = [int(label-1) for label in y_test]
+#y_test = [int(label-1) for label in y_test] # only for DistilBERT
 
 # Load and preprocess the balanced test set
 
@@ -66,7 +66,7 @@ y_test_balanced = test_data['overall']
 X_test_balanced = preprocess(X_test_balanced)
 
 X_test_balanced = [str(text) for text in X_test_balanced]
-y_test_balanced = [int(label-1) for label in y_test_balanced]
+# y_test_balanced = [int(label-1) for label in y_test_balanced] # only for DistilBERT
 
 # load and preprpcess the real test set
 
@@ -79,4 +79,4 @@ y_test_real = test_data['overall']
 X_test_real = preprocess(X_test_real)
 
 X_test_real = [str(text) for text in X_test_real]
-y_test_real = [int(label-1) for label in y_test_real]
+#y_test_real = [int(label-1) for label in y_test_real] # only for DistilBERT
