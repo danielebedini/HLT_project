@@ -46,9 +46,9 @@ if __name__ == '__main__':
     #model_nb.evaluate(X_test, y_test)
     #plot_confusion_matrix(model_nb.model, X_test, y_test, 'Naive Bayes Unbalanced Data')
 
-    """print("Test (difficult version) on unbalanced data")
-    model_nb.evaluate(X_test_real, y_test_real)
-    plot_confusion_matrix(model_nb.model, X_test_real, y_test_real, 'Naive Bayes Real Test')"""
+    #print("Test (difficult version) on unbalanced data")
+    #model_nb.evaluate(X_test_real, y_test_real)
+    #plot_confusion_matrix(model_nb.model, X_test_real, y_test_real, 'Naive Bayes Real Test')
     
 
     #print("Test on balanced data")

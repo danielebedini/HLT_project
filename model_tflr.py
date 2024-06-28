@@ -58,10 +58,10 @@ if __name__ == '__main__':
     """
 
     #print("Test on balanced data")
-    #metrics_with_three_classes(model_tflr.model, X_test_balanced, y_test_balanced, 'Naive Bayes Balanced Data')
+    #metrics_with_three_classes(model_tflr.model, X_test_balanced, y_test_balanced, 'TF-IDF Logistic Regression Real Test')
 
     #print("Test on unbalanced data")
-    #metrics_with_three_classes(model_tflr.model, X_test, y_test, 'Naive Bayes Unbalanced Data')
+    #metrics_with_three_classes(model_tflr.model, X_test, y_test, 'TF-IDF Logistic Regression Real Test')
 
     print("Test on real data")
-    metrics_with_three_classes(model_tflr.model, X_test_real, y_test_real, 'Naive Bayes Real Test')
+    metrics_with_three_classes(model_tflr.model, X_test_real, y_test_real, 'TF-IDF Logistic Regression Real Test')
