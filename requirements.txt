@@ -14,3 +14,5 @@ tokenizers==0.19.1
 torch==1.10.0
 transformers==4.12.2
 datasets==1.14.0
+sentence-transformers==2.1.0
+sentencepiece==0.1.96
